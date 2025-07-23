@@ -4032,6 +4032,7 @@ function completeModule(moduleId) {
     const moduleCard = document.querySelector(`[data-module="${moduleId}"]`);
     if (moduleCard) {
         moduleCard.classList.remove('active');
+        moduleCard.classList.remove('reset'); // Remove reset class when completing
         moduleCard.classList.add('completed');
         
         // Update status icon
@@ -4084,6 +4085,9 @@ function incompleteModule(moduleId) {
         moduleCard.classList.remove('completed');
         moduleCard.classList.add('active');
         
+        // Add a special class to track that this module was reset
+        moduleCard.classList.add('reset');
+        
         // Update status icon
         const statusIcon = moduleCard.querySelector('.module-status i');
         if (statusIcon) {
@@ -4129,26 +4133,36 @@ function incompleteModule(moduleId) {
 function updateProgress() {
     const completedModules = document.querySelectorAll('.module-card.completed').length;
     const totalModules = 5;
-    const progressPercentage = (completedModules / totalModules) * 100;
+    
+    // Calculate overall progress including partial progress from active module
+    let overallProgress = (completedModules / totalModules) * 100;
+    
+    // Add partial progress from active module (60% of one module = 12% of total course)
+    const activeModule = document.querySelector('.module-card.active:not(.reset)');
+    if (activeModule) {
+        const activeModuleIndex = parseInt(activeModule.getAttribute('data-module')) - 1;
+        const partialProgress = (60 / totalModules); // 60% of one module = 12% of total
+        overallProgress += partialProgress;
+    }
     
     // Update overall progress circle
     const progressCircle = document.querySelector('.progress-percentage');
     if (progressCircle) {
-        progressCircle.textContent = Math.round(progressPercentage) + '%';
+        progressCircle.textContent = Math.round(overallProgress) + '%';
     }
     
     // Update SVG circle stroke-dashoffset
     const svgCircle = document.querySelector('.progress-circle svg circle:last-child');
     if (svgCircle) {
         const circumference = 502.4; // 2 * π * radius (80)
-        const offset = circumference - (progressPercentage / 100) * circumference;
+        const offset = circumference - (overallProgress / 100) * circumference;
         svgCircle.setAttribute('stroke-dashoffset', offset);
     }
     
     // Update navigation progress
     const navProgress = document.querySelector('.nav-user .progress-bar');
     if (navProgress) {
-        navProgress.style.width = progressPercentage + '%';
+        navProgress.style.width = overallProgress + '%';
     }
     
     // Update module progress bars
@@ -4156,13 +4170,21 @@ function updateProgress() {
     progressItems.forEach((item, index) => {
         const fill = item.querySelector('.progress-bar-fill');
         const percent = item.querySelector('.progress-percent');
+        const moduleCard = document.querySelector(`[data-module="${index + 1}"]`);
         
-        if (index < completedModules) {
+        if (moduleCard && moduleCard.classList.contains('completed')) {
             fill.style.width = '100%';
             percent.textContent = '100%';
-        } else if (index === completedModules && document.querySelector(`[data-module="${index + 1}"]`).classList.contains('active')) {
-            fill.style.width = '60%';
-            percent.textContent = '60%';
+        } else if (moduleCard && moduleCard.classList.contains('active')) {
+            // Check if this module was reset (marked as incomplete)
+            if (moduleCard.classList.contains('reset')) {
+                fill.style.width = '0%';
+                percent.textContent = '0%';
+            } else {
+                // This is the first active module (not previously completed)
+                fill.style.width = '60%';
+                percent.textContent = '60%';
+            }
         } else {
             fill.style.width = '0%';
             percent.textContent = '0%';
