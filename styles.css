@@ -452,7 +452,6 @@ body {
 
 
 
-
 /* Progress Section */
 .progress-container {
     display: grid;
@@ -5311,4 +5310,5 @@ body {
     .download-btn {
         margin-top: 1rem;
     }
+}
 }
