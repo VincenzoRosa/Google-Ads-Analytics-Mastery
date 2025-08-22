@@ -169,7 +169,7 @@ function createCourseCard(course) {
     const actionButton = course.comingSoon ? 
         `<button class="btn btn-disabled" disabled>Coming Soon</button>` :
         course.enrolled ? 
-        `<button class="btn btn-primary" onclick="openCourse('${course.id}')">Continue Learning</button>` :
+        `<button class="btn btn-primary" onclick="openCourse('${course.id}')">${course.progress === 100 ? 'Review Course' : 'Continue Learning'}</button>` :
         `<button class="btn btn-outline" onclick="enrollCourse('${course.id}')">Enroll Now</button>`;
     
     card.innerHTML = `
@@ -276,9 +276,18 @@ function createEnrolledCourseCard(course) {
             </div>
         ` : ''}
         <div class="enrolled-course-actions">
-            <button class="btn btn-primary" onclick="openCourse('${course.id}')">
-                <i class="fas fa-play"></i> Continue Learning
-            </button>
+            ${course.progress === 100 ? `
+                <button class="btn btn-primary" onclick="openCourse('${course.id}')">
+                    <i class="fas fa-book-open"></i> Review Course
+                </button>
+                <button class="btn btn-outline" onclick="resetCourseProgress('${course.id}')">
+                    <i class="fas fa-redo"></i> Reset Progress
+                </button>
+            ` : `
+                <button class="btn btn-primary" onclick="openCourse('${course.id}')">
+                    <i class="fas fa-play"></i> Continue Learning
+                </button>
+            `}
             ${course.modules ? `
                 <button class="btn btn-outline" onclick="viewCourseDetails('${course.id}')">
                     <i class="fas fa-info-circle"></i> View Details
@@ -427,9 +436,18 @@ function viewCourseDetails(courseId) {
             </div>
             
             <div class="modal-actions">
-                <button class="btn btn-primary" onclick="openCourse('${courseId}')">
-                    <i class="fas fa-play"></i> Continue Course
-                </button>
+                ${course.progress === 100 ? `
+                    <button class="btn btn-primary" onclick="openCourse('${courseId}')">
+                        <i class="fas fa-book-open"></i> Review Course
+                    </button>
+                    <button class="btn btn-outline" onclick="resetCourseProgress('${courseId}')">
+                        <i class="fas fa-redo"></i> Reset Progress
+                    </button>
+                ` : `
+                    <button class="btn btn-primary" onclick="openCourse('${courseId}')">
+                        <i class="fas fa-play"></i> Continue Course
+                    </button>
+                `}
                 <button class="btn btn-outline" onclick="closeModal()">
                     Close
                 </button>
@@ -439,6 +457,77 @@ function viewCourseDetails(courseId) {
     
     // Open modal with content
     openModal(modalContent);
+}
+
+// Reset course progress
+function resetCourseProgress(courseId) {
+    if (!confirm('Are you sure you want to reset your progress for this course? This will mark all modules as incomplete.')) {
+        return;
+    }
+    
+    const course = getCourse(courseId);
+    if (!course) return;
+    
+    // Reset progress to 0
+    course.progress = 0;
+    
+    // Mark all modules as incomplete
+    if (course.modules) {
+        course.modules.forEach(module => {
+            module.completed = false;
+        });
+    }
+    
+    // Clear localStorage for this course
+    localStorage.removeItem(`course_progress_${courseId}`);
+    localStorage.removeItem(`modules_${courseId}`);
+    localStorage.removeItem(`progress_${courseId}`);
+    localStorage.removeItem(`last_module_${courseId}`);
+    
+    // Update the course progress in the main data
+    if (typeof updateCourseProgress === 'function') {
+        updateCourseProgress(courseId, 0);
+    }
+    
+    // Save the reset state
+    const moduleStatus = course.modules ? course.modules.map(m => ({ 
+        id: m.id, 
+        completed: false 
+    })) : [];
+    localStorage.setItem(`modules_${courseId}`, JSON.stringify(moduleStatus));
+    
+    // Close modal if open
+    closeModal();
+    
+    // Refresh the current view
+    const activeSection = document.querySelector('.section.active');
+    if (activeSection) {
+        if (activeSection.id === 'my-courses') {
+            displayEnrolledCourses();
+        } else if (activeSection.id === 'dashboard') {
+            displayDashboard();
+        } else if (activeSection.id === 'catalog') {
+            displayCourses();
+        }
+    }
+    
+    // Show success message
+    const notification = document.createElement('div');
+    notification.className = 'reset-notification';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>Course progress has been reset successfully!</span>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 // Update module cards for a specific course
