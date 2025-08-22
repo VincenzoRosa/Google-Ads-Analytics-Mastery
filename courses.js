@@ -94,30 +94,9 @@ const courses = {
             },
             {
                 id: 3,
-                title: 'Understanding Ad Rank Thresholds',
-                description: 'Learn how multiple auctions work',
-                duration: '20 minutes',
-                completed: false
-            },
-            {
-                id: 4,
-                title: 'Live Auction Simulation',
-                description: 'See real auction examples and calculations',
-                duration: '25 minutes',
-                completed: false
-            },
-            {
-                id: 5,
-                title: 'Quality Score Deep Dive',
-                description: 'Impact on position and costs',
-                duration: '20 minutes',
-                completed: false
-            },
-            {
-                id: 6,
-                title: 'Modern CPC Strategy',
-                description: 'Why manual bidding is obsolete',
-                duration: '30 minutes',
+                title: 'Quality Score Revolution',
+                description: 'Deep dive into Quality Score components and optimization',
+                duration: '45 minutes',
                 completed: false
             }
         ],
