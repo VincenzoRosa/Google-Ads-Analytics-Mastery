@@ -32,9 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update view based on section
             if (targetId === 'catalog') {
-                // Clear courses grid to show summary stats view
+                // Clear all course containers to show summary stats view
                 const coursesGrid = document.getElementById('courses-grid');
+                const enrolledCourses = document.getElementById('enrolled-courses');
                 if (coursesGrid) coursesGrid.innerHTML = '';
+                if (enrolledCourses) enrolledCourses.innerHTML = '';
             } else if (targetId === 'my-courses') {
                 displayEnrolledCourses();
             } else if (targetId === 'dashboard') {
@@ -350,9 +352,11 @@ function showCatalog() {
     if (catalogLink) catalogLink.classList.add('active');
     if (catalogSection) catalogSection.classList.add('active');
     
-    // Clear courses grid to show summary stats view
+    // Clear all course containers to show summary stats view
     const coursesGrid = document.getElementById('courses-grid');
+    const enrolledCourses = document.getElementById('enrolled-courses');
     if (coursesGrid) coursesGrid.innerHTML = '';
+    if (enrolledCourses) enrolledCourses.innerHTML = '';
 }
 
 // Show notification
