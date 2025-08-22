@@ -474,11 +474,11 @@ function displayCurrentCourses() {
                         </div>
                     </div>
                     <div class="course-progress-ring">
-                        <svg width="50" height="50">
-                            <circle cx="25" cy="25" r="20" stroke="#e0e0e0" stroke-width="4" fill="none"/>
-                            <circle cx="25" cy="25" r="20" stroke="${course.color}" stroke-width="4" fill="none"
-                                    stroke-dasharray="${126 * progressWidth / 100} 126"
-                                    transform="rotate(-90 25 25)"/>
+                        <svg width="80" height="80">
+                            <circle cx="40" cy="40" r="35" stroke="#e0e0e0" stroke-width="4" fill="none"/>
+                            <circle cx="40" cy="40" r="35" stroke="${course.color}" stroke-width="4" fill="none"
+                                    stroke-dasharray="${220 * progressWidth / 100} 220"
+                                    transform="rotate(-90 40 40)"/>
                         </svg>
                         <span class="progress-text">${progressWidth}%</span>
                     </div>
