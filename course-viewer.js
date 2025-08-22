@@ -475,20 +475,286 @@ function loadModuleResources(module) {
     const resourcesList = document.getElementById('resources-list');
     
     if (module.content.exercises) {
-        resourcesList.innerHTML = module.content.exercises.map(exercise => `
-            <div class="resource-item">
-                <div class="resource-icon">
-                    <i class="fas fa-tasks"></i>
+        resourcesList.innerHTML = module.content.exercises.map((exercise, index) => {
+            const icon = exercise.type === 'calculator' ? 'fa-calculator' : 
+                         exercise.type === 'worksheet' ? 'fa-clipboard-list' : 
+                         exercise.type === 'interactive' ? 'fa-laptop-code' : 'fa-tasks';
+            
+            return `
+                <div class="resource-item clickable" onclick="openExercise('${exercise.type}', '${exercise.title}', ${currentModule.id}, ${index})">
+                    <div class="resource-icon">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>${exercise.title}</h4>
+                        <p>${exercise.description}</p>
+                    </div>
+                    <div class="resource-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
                 </div>
-                <div class="resource-info">
-                    <h4>${exercise.title}</h4>
-                    <p>${exercise.description}</p>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     } else {
         resourcesList.innerHTML = '<p>No resources available for this module.</p>';
     }
+}
+
+// Open exercise based on type
+function openExercise(type, title, moduleId, exerciseIndex) {
+    let exerciseContent = '';
+    
+    if (type === 'calculator' && title === 'CPC Calculator') {
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-calculator"></i> CPC Calculator</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>Calculate your actual Cost Per Click using Google's real auction formula.</p>
+                    
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label>Ad Rank of Advertiser Below You:</label>
+                            <input type="number" id="adrank-below" placeholder="e.g., 50" step="0.01">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Your Quality Score:</label>
+                            <input type="number" id="quality-score" placeholder="1-10" min="1" max="10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Your Maximum Bid:</label>
+                            <input type="number" id="max-bid" placeholder="e.g., 5.00" step="0.01">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="calculateCPC()">
+                            Calculate CPC
+                        </button>
+                        
+                        <div id="cpc-result" class="result-box" style="display: none;">
+                            <h3>Your Actual CPC</h3>
+                            <div class="result-value">$<span id="calculated-cpc">0.00</span></div>
+                            <p class="result-formula">
+                                Formula: (Ad Rank Below / Your QS) + $0.01
+                            </p>
+                            <p class="result-explanation" id="cpc-explanation"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (type === 'worksheet' && title === 'Quality Score Audit') {
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-clipboard-list"></i> Quality Score Audit Worksheet</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>Audit your campaigns to identify Quality Score improvement opportunities.</p>
+                    
+                    <div class="audit-checklist">
+                        <h3>Expected CTR Factors</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1">
+                            <label for="check1">Ad relevance to keywords</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2">
+                            <label for="check2">Historical account performance</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3">
+                            <label for="check3">Ad extensions usage</label>
+                        </div>
+                        
+                        <h3>Landing Page Experience</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4">
+                            <label for="check4">Page load speed (< 3 seconds)</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check5">
+                            <label for="check5">Mobile responsiveness</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check6">
+                            <label for="check6">Relevant content to ad copy</label>
+                        </div>
+                        
+                        <h3>Ad Relevance</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check7">
+                            <label for="check7">Keywords in headlines</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check8">
+                            <label for="check8">Clear value proposition</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check9">
+                            <label for="check9">Strong call-to-action</label>
+                        </div>
+                        
+                        <div class="audit-score">
+                            <h3>Your Audit Score: <span id="audit-score">0</span>/9</h3>
+                            <div class="score-bar">
+                                <div class="score-fill" id="score-fill"></div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="downloadAudit()">
+                            <i class="fas fa-download"></i> Download Audit Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-tasks"></i> ${title}</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>This exercise is currently being developed. Check back soon!</p>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Create and show the exercise modal
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'exercise-overlay';
+    modalOverlay.innerHTML = exerciseContent;
+    document.body.appendChild(modalOverlay);
+    
+    // Add show class for animation
+    setTimeout(() => {
+        modalOverlay.classList.add('show');
+    }, 10);
+    
+    // Add event listeners for audit checkboxes if it's the audit worksheet
+    if (type === 'worksheet') {
+        setTimeout(() => {
+            const checkboxes = modalOverlay.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateAuditScore);
+            });
+        }, 100);
+    }
+}
+
+// Close exercise modal
+function closeExercise() {
+    const overlay = document.querySelector('.exercise-overlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
+    }
+}
+
+// Calculate CPC
+function calculateCPC() {
+    const adRankBelow = parseFloat(document.getElementById('adrank-below').value) || 0;
+    const qualityScore = parseFloat(document.getElementById('quality-score').value) || 1;
+    const maxBid = parseFloat(document.getElementById('max-bid').value) || 0;
+    
+    if (adRankBelow <= 0 || qualityScore < 1 || qualityScore > 10) {
+        alert('Please enter valid values');
+        return;
+    }
+    
+    // Formula: (Ad Rank of advertiser below / Your Quality Score) + $0.01
+    let calculatedCPC = (adRankBelow / qualityScore) + 0.01;
+    
+    // CPC cannot exceed max bid
+    if (calculatedCPC > maxBid) {
+        calculatedCPC = maxBid;
+    }
+    
+    document.getElementById('calculated-cpc').textContent = calculatedCPC.toFixed(2);
+    
+    let explanation = '';
+    if (calculatedCPC === maxBid) {
+        explanation = `Your calculated CPC would be $${((adRankBelow / qualityScore) + 0.01).toFixed(2)}, but it's capped at your max bid of $${maxBid.toFixed(2)}.`;
+    } else {
+        explanation = `With a Quality Score of ${qualityScore}, you pay just enough to beat the advertiser below you.`;
+    }
+    
+    document.getElementById('cpc-explanation').textContent = explanation;
+    document.getElementById('cpc-result').style.display = 'block';
+}
+
+// Update audit score
+function updateAuditScore() {
+    const checkboxes = document.querySelectorAll('.audit-checklist input[type="checkbox"]');
+    const checked = document.querySelectorAll('.audit-checklist input[type="checkbox"]:checked');
+    const score = checked.length;
+    const percentage = (score / checkboxes.length) * 100;
+    
+    document.getElementById('audit-score').textContent = score;
+    document.getElementById('score-fill').style.width = `${percentage}%`;
+    
+    // Change color based on score
+    const fill = document.getElementById('score-fill');
+    if (percentage >= 80) {
+        fill.style.background = '#48bb78';
+    } else if (percentage >= 60) {
+        fill.style.background = '#ed8936';
+    } else {
+        fill.style.background = '#f56565';
+    }
+}
+
+// Download audit report
+function downloadAudit() {
+    const checkboxes = document.querySelectorAll('.audit-checklist input[type="checkbox"]');
+    const score = document.querySelectorAll('.audit-checklist input[type="checkbox"]:checked').length;
+    
+    let report = 'Quality Score Audit Report\n';
+    report += '=' .repeat(30) + '\n\n';
+    report += `Date: ${new Date().toLocaleDateString()}\n`;
+    report += `Course: ${currentCourse.title}\n`;
+    report += `Module: ${currentModule.title}\n\n`;
+    report += `Audit Score: ${score}/${checkboxes.length}\n\n`;
+    
+    report += 'Checklist Results:\n';
+    report += '-'.repeat(20) + '\n';
+    
+    checkboxes.forEach(checkbox => {
+        const label = checkbox.nextElementSibling.textContent;
+        const status = checkbox.checked ? '✓' : '✗';
+        report += `${status} ${label}\n`;
+    });
+    
+    report += '\n' + '=' .repeat(30) + '\n';
+    report += 'Generated by Google Ads Learning Platform';
+    
+    // Create download link
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quality-score-audit-${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    alert('Audit report downloaded successfully!');
 }
 
 // Render quiz
