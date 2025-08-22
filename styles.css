@@ -5530,6 +5530,15 @@ body {
     position: relative;
     width: 60px;
     height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.course-progress-ring svg {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .course-progress-ring .progress-text {
@@ -5539,6 +5548,7 @@ body {
     transform: translate(-50%, -50%);
     font-weight: 700;
     font-size: 0.9rem;
+    z-index: 1;
 }
 
 .course-body {
@@ -5927,19 +5937,30 @@ body {
     font-weight: 500;
 }
 
-.course-progress-ring {
+/* Dashboard specific progress ring styling */
+.dashboard-section .course-progress-ring {
     position: relative;
     width: 80px;
     height: 80px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.course-progress-ring .progress-text {
+.dashboard-section .course-progress-ring svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.dashboard-section .course-progress-ring .progress-text {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 0.8rem;
+    z-index: 1;
     font-weight: 600;
     color: #333;
 }
