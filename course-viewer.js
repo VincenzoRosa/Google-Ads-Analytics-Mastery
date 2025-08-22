@@ -324,13 +324,21 @@ function updateNavigation(current, total) {
     
     // Update position indicator - ensure we show the correct values
     console.log(`Updating navigation: current=${current}, total=${total}`);
+    const progressIndicator = document.querySelector('.progress-indicator');
+    
     if (current === -1) {
         // Overview state
         document.getElementById('current-position').textContent = 'Overview';
         document.getElementById('total-items').textContent = total;
+        if (progressIndicator) progressIndicator.style.display = 'flex';
+    } else if (total === 1) {
+        // Hide indicator when there's only 1 lesson/section
+        if (progressIndicator) progressIndicator.style.display = 'none';
     } else {
+        // Show position when there are multiple lessons/sections
         document.getElementById('current-position').textContent = current + 1;
         document.getElementById('total-items').textContent = total;
+        if (progressIndicator) progressIndicator.style.display = 'flex';
     }
 }
 
