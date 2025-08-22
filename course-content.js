@@ -1782,6 +1782,18 @@ function checkBudgetPacing() {
                             correct: 2,
                             explanation: 'Keyword match type affects which auctions you enter, but isn\'t a direct Ad Rank factor.'
                         }
+                    ],
+                    exercises: [
+                        {
+                            title: 'Ad Rank Calculator',
+                            description: 'Calculate your Ad Rank with all 6 factors',
+                            type: 'calculator'
+                        },
+                        {
+                            title: 'Auction Simulator',
+                            description: 'Simulate live auction scenarios',
+                            type: 'interactive'
+                        }
                     ]
                 }
             },
@@ -2011,6 +2023,18 @@ function checkBudgetPacing() {
                             ],
                             correct: 2,
                             explanation: 'Modern PPC focuses on value and profitability, not just low costs.'
+                        }
+                    ],
+                    exercises: [
+                        {
+                            title: 'CPC Calculator',
+                            description: 'Calculate actual CPC with Quality Score impact',
+                            type: 'calculator'
+                        },
+                        {
+                            title: 'CPC Optimization Worksheet',
+                            description: 'Create your CPC reduction strategy',
+                            type: 'worksheet'
                         }
                     ]
                 }
@@ -2277,6 +2301,18 @@ function checkBudgetPacing() {
                             ],
                             correct: 2,
                             explanation: 'QS of 7+ is considered good and provides CPC benefits. Below 7 means paying premium.'
+                        }
+                    ],
+                    exercises: [
+                        {
+                            title: 'Quality Score Analyzer',
+                            description: 'Analyze and improve your Quality Score',
+                            type: 'interactive'
+                        },
+                        {
+                            title: 'Landing Page Optimizer',
+                            description: 'Optimize landing pages for better QS',
+                            type: 'worksheet'
                         }
                     ]
                 }

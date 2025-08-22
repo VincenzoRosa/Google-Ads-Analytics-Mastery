@@ -671,6 +671,96 @@ function openExercise(type, title, moduleId, exerciseIndex) {
                 </div>
             </div>
         `;
+    } else if (type === 'interactive' && title === 'Build Your KPI Dashboard') {
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-chart-line"></i> Build Your KPI Dashboard</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>Create a custom KPI dashboard tailored to your business goals.</p>
+                    
+                    <div class="dashboard-builder">
+                        <h4>Select Your Primary KPIs (Choose up to 5)</h4>
+                        <div class="kpi-selector">
+                            <label><input type="checkbox" value="CTR"> Click-Through Rate (CTR)</label>
+                            <label><input type="checkbox" value="CPC"> Cost Per Click (CPC)</label>
+                            <label><input type="checkbox" value="Conv Rate"> Conversion Rate</label>
+                            <label><input type="checkbox" value="CPA"> Cost Per Acquisition (CPA)</label>
+                            <label><input type="checkbox" value="ROAS"> Return on Ad Spend (ROAS)</label>
+                            <label><input type="checkbox" value="Impressions"> Impression Share</label>
+                            <label><input type="checkbox" value="Quality Score"> Quality Score</label>
+                            <label><input type="checkbox" value="Budget"> Budget Utilization</label>
+                        </div>
+                        
+                        <h4>Set Your Target Ranges</h4>
+                        <div class="target-setter">
+                            <div class="form-group">
+                                <label>Target CTR (%):</label>
+                                <input type="number" placeholder="e.g., 3.5" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Maximum CPC ($):</label>
+                                <input type="number" placeholder="e.g., 2.50" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Target CPA ($):</label>
+                                <input type="number" placeholder="e.g., 50" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Minimum ROAS:</label>
+                                <input type="number" placeholder="e.g., 4.0" step="0.1">
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="generateDashboard()">Generate Dashboard Template</button>
+                        
+                        <div id="dashboard-preview" style="margin-top: 2rem;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (type === 'interactive') {
+        // Other interactive exercises
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-laptop-code"></i> ${title}</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>Interactive exercise: ${title}</p>
+                    <div class="interactive-content">
+                        <p>This interactive exercise helps you practice and apply the concepts learned in this module.</p>
+                        <button class="btn btn-primary" onclick="alert('Exercise functionality coming soon!')">Start Exercise</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (type === 'calculator') {
+        // Generic calculator for other calculator exercises
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-calculator"></i> ${title}</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>${title} - Interactive Calculator</p>
+                    <div class="calculator-content">
+                        <p>This calculator helps you compute and analyze metrics.</p>
+                        <button class="btn btn-primary" onclick="alert('Calculator functionality coming soon!')">Open Calculator</button>
+                    </div>
+                </div>
+            </div>
+        `;
     } else {
         exerciseContent = `
             <div class="exercise-modal">
@@ -842,6 +932,46 @@ function updateAuditScore() {
     } else {
         fill.style.background = '#f56565';
     }
+}
+
+// Generate dashboard from KPI builder
+function generateDashboard() {
+    const selectedKPIs = [];
+    const checkboxes = document.querySelectorAll('.kpi-selector input:checked');
+    
+    checkboxes.forEach(cb => {
+        selectedKPIs.push(cb.value);
+    });
+    
+    if (selectedKPIs.length === 0) {
+        alert('Please select at least one KPI for your dashboard');
+        return;
+    }
+    
+    if (selectedKPIs.length > 5) {
+        alert('Please select no more than 5 KPIs for optimal dashboard clarity');
+        return;
+    }
+    
+    const dashboardPreview = document.getElementById('dashboard-preview');
+    dashboardPreview.innerHTML = `
+        <div class="dashboard-template">
+            <h4>Your Custom Dashboard Template</h4>
+            <p>Selected KPIs: ${selectedKPIs.join(', ')}</p>
+            <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                ${selectedKPIs.map(kpi => `
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                        <strong>${kpi}</strong>
+                        <div style="font-size: 1.5rem; color: #4285f4; margin: 0.5rem 0;">--</div>
+                        <small>Target: Set in Google Ads</small>
+                    </div>
+                `).join('')}
+            </div>
+            <button class="btn btn-success" style="margin-top: 1rem;" onclick="alert('Dashboard template saved! You can now implement this in Google Ads.')">
+                Save Dashboard Configuration
+            </button>
+        </div>
+    `;
 }
 
 // Download audit report
