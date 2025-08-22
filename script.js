@@ -248,11 +248,11 @@ function createEnrolledCourseCard(course) {
             </div>
             <div class="course-overall-progress">
                 <div class="progress-circle-large">
-                    <svg width="80" height="80">
-                        <circle cx="40" cy="40" r="35" stroke="#e0e0e0" stroke-width="6" fill="none"/>
-                        <circle cx="40" cy="40" r="35" stroke="${course.color}" stroke-width="6" fill="none"
-                                stroke-dasharray="${220 * course.progress / 100} 220"
-                                transform="rotate(-90 40 40)"/>
+                    <svg width="100" height="100">
+                        <circle cx="50" cy="50" r="42" stroke="#e0e0e0" stroke-width="6" fill="none"/>
+                        <circle cx="50" cy="50" r="42" stroke="${course.color}" stroke-width="6" fill="none"
+                                stroke-dasharray="${264 * course.progress / 100} 264"
+                                transform="rotate(-90 50 50)"/>
                     </svg>
                     <div class="progress-info">
                         <span class="progress-percent">${course.progress}%</span>
