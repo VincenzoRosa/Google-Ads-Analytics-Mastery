@@ -442,22 +442,16 @@ function showCompletionMessage() {
 // Show course completion message
 function showCourseCompletionMessage() {
     const notification = document.createElement('div');
-    notification.className = 'completion-notification course-complete';
+    notification.className = 'course-completion-message';
     notification.innerHTML = `
-        <div class="completion-content">
-            <i class="fas fa-trophy"></i>
-            <h2>Course Completed!</h2>
-            <p>Congratulations! You've successfully completed<br><strong>${currentCourse.title}</strong></p>
-            <div class="completion-stats">
-                <span><i class="fas fa-check"></i> All modules completed</span>
-                <span><i class="fas fa-star"></i> 100% Progress</span>
-            </div>
-        </div>
+        <i class="fas fa-trophy"></i>
+        <h2>Course Completed!</h2>
+        <p>Congratulations! You've successfully completed<br><strong>${currentCourse.title}</strong></p>
     `;
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.classList.add('show');
+        notification.style.opacity = '1';
     }, 100);
     
     setTimeout(() => {

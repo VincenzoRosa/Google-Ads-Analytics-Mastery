@@ -646,6 +646,102 @@ body {
     color: var(--text-secondary);
 }
 
+/* Completion Notification */
+.completion-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    animation: slideInBounce 0.5s ease-out;
+}
+
+.completion-notification i {
+    font-size: 2rem;
+    color: #4ade80;
+}
+
+@keyframes slideInBounce {
+    0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Course Completion Message */
+.course-completion-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    color: white;
+    padding: 3rem 4rem;
+    border-radius: 25px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    text-align: center;
+    animation: celebrateIn 0.6s ease-out;
+}
+
+.course-completion-message h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.course-completion-message p {
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+.course-completion-message i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+    animation: sparkle 1s ease-in-out infinite;
+}
+
+@keyframes celebrateIn {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1) rotate(10deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
 /* Quiz Styles */
 .quiz-container {
     background: var(--surface);
