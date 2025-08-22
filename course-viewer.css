@@ -704,6 +704,63 @@ body {
     background: rgba(245, 101, 101, 0.1);
 }
 
+/* Quiz Styles - Matching Original Design */
+.quiz-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin: 2rem 0;
+}
+
+.quiz-question {
+    margin-bottom: 2rem;
+}
+
+.quiz-question:last-child {
+    margin-bottom: 0;
+}
+
+.quiz-question h5 {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quiz-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.quiz-options label:hover {
+    background: #e9ecef;
+    border-color: var(--primary);
+}
+
+.quiz-options input[type="radio"] {
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+.quiz-options input[type="radio"]:checked + label {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: var(--primary);
+}
+
 /* Completed Module Button Styles */
 .nav-btn.btn-completed {
     background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
