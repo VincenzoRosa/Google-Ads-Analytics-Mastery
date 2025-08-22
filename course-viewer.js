@@ -331,15 +331,30 @@ function completeModule() {
     // Update progress bar
     updateCourseProgress();
     
+    // Check if this is the last module and show appropriate message
+    const currentIndex = courseContent.modules.findIndex(m => m.id === currentModule.id);
+    const isLastModule = currentIndex === courseContent.modules.length - 1;
+    const isCourseComplete = progressPercentage === 100;
+    
     // Show completion message
-    showCompletionMessage();
+    if (isLastModule && isCourseComplete) {
+        showCourseCompletionMessage();
+    } else {
+        showCompletionMessage();
+    }
     
     // Load next module if available
-    const currentIndex = courseContent.modules.findIndex(m => m.id === currentModule.id);
-    if (currentIndex < courseContent.modules.length - 1) {
+    if (!isLastModule) {
         setTimeout(() => {
             loadModule(courseContent.modules[currentIndex + 1].id);
         }, 2000);
+    } else {
+        // Course is complete - optionally redirect to courses page after delay
+        setTimeout(() => {
+            if (confirm('Congratulations! You have completed the entire course. Would you like to return to the course catalog?')) {
+                window.location.href = 'index.html';
+            }
+        }, 3000);
     }
 }
 
@@ -361,6 +376,33 @@ function showCompletionMessage() {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
     }, 3000);
+}
+
+// Show course completion message
+function showCourseCompletionMessage() {
+    const notification = document.createElement('div');
+    notification.className = 'completion-notification course-complete';
+    notification.innerHTML = `
+        <div class="completion-content">
+            <i class="fas fa-trophy"></i>
+            <h2>Course Completed!</h2>
+            <p>Congratulations! You've successfully completed<br><strong>${currentCourse.title}</strong></p>
+            <div class="completion-stats">
+                <span><i class="fas fa-check"></i> All modules completed</span>
+                <span><i class="fas fa-star"></i> 100% Progress</span>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
 }
 
 // Update course progress
@@ -572,6 +614,59 @@ style.textContent = `
     
     .completion-notification i {
         font-size: 2rem;
+    }
+    
+    .completion-notification.course-complete {
+        background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+        padding: 3rem;
+        min-width: 400px;
+    }
+    
+    .completion-notification.course-complete .completion-content {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .completion-notification.course-complete i.fa-trophy {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+        animation: bounce 0.5s ease-in-out;
+    }
+    
+    .completion-notification.course-complete h2 {
+        font-size: 2rem;
+        margin: 0 0 0.5rem 0;
+        font-weight: 700;
+    }
+    
+    .completion-notification.course-complete p {
+        font-size: 1.1rem;
+        margin: 0 0 1.5rem 0;
+        opacity: 0.95;
+    }
+    
+    .completion-notification.course-complete .completion-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    
+    .completion-notification.course-complete .completion-stats span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .completion-notification.course-complete .completion-stats i {
+        font-size: 1.2rem;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
     }
 `;
 document.head.appendChild(style);
