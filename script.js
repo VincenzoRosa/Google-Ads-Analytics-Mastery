@@ -299,6 +299,148 @@ function openCourse(courseId) {
     window.location.href = `course-viewer.html?course=${courseId}`;
 }
 
+// Modal functions
+function openModal(content) {
+    // Remove any existing modal
+    closeModal();
+    
+    // Create modal elements
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay';
+    modalOverlay.onclick = closeModal;
+    
+    const modalContainer = document.createElement('div');
+    modalContainer.className = 'modal-container';
+    modalContainer.onclick = (e) => e.stopPropagation();
+    
+    modalContainer.innerHTML = content;
+    
+    modalOverlay.appendChild(modalContainer);
+    document.body.appendChild(modalOverlay);
+    
+    // Add show class after a brief delay for animation
+    setTimeout(() => {
+        modalOverlay.classList.add('show');
+    }, 10);
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modalOverlay = document.querySelector('.modal-overlay');
+    if (modalOverlay) {
+        modalOverlay.classList.remove('show');
+        setTimeout(() => {
+            modalOverlay.remove();
+            document.body.style.overflow = '';
+        }, 300);
+    }
+}
+
+// View course details in a modal
+function viewCourseDetails(courseId) {
+    const course = getCourse(courseId);
+    if (!course) return;
+    
+    // Calculate total modules and completed modules
+    const completedModules = course.modules ? course.modules.filter(m => m.completed).length : 0;
+    const totalModules = course.modules ? course.modules.length : 0;
+    
+    // Create modal content
+    const modalContent = `
+        <div class="course-details-modal">
+            <div class="modal-header">
+                <h2>${course.title}</h2>
+                <span class="course-badge" style="background: ${course.color}">
+                    <i class="${course.icon}"></i>
+                </span>
+            </div>
+            
+            <div class="modal-body">
+                <div class="course-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Duration: ${course.duration}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Difficulty: ${course.difficulty}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Progress: ${course.progress}%</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Completed: ${completedModules}/${totalModules} modules</span>
+                    </div>
+                </div>
+                
+                <div class="course-description">
+                    <h3>About This Course</h3>
+                    <p>${course.description}</p>
+                </div>
+                
+                ${course.features ? `
+                    <div class="course-features">
+                        <h3>What You'll Learn</h3>
+                        <ul>
+                            ${course.features.map(feature => `
+                                <li><i class="fas fa-check"></i> ${feature}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+                
+                ${course.modules ? `
+                    <div class="course-modules-list">
+                        <h3>Course Modules</h3>
+                        <div class="modules-detailed">
+                            ${course.modules.map((module, index) => `
+                                <div class="module-detail-item ${module.completed ? 'completed' : ''}">
+                                    <div class="module-number">${index + 1}</div>
+                                    <div class="module-info">
+                                        <h4>${module.title}</h4>
+                                        <p>${module.description}</p>
+                                        <span class="module-duration">
+                                            <i class="fas fa-clock"></i> ${module.duration}
+                                        </span>
+                                    </div>
+                                    <div class="module-status">
+                                        ${module.completed ? 
+                                            '<i class="fas fa-check-circle" style="color: #48bb78;"></i>' : 
+                                            '<i class="fas fa-circle" style="color: #cbd5e0;"></i>'
+                                        }
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="course-tags">
+                    ${course.tags ? course.tags.map(tag => `
+                        <span class="tag">${tag}</span>
+                    `).join('') : ''}
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="openCourse('${courseId}')">
+                    <i class="fas fa-play"></i> Continue Course
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">
+                    Close
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Open modal with content
+    openModal(modalContent);
+}
+
 // Update module cards for a specific course
 function updateModuleCards(course) {
     const moduleCards = document.querySelectorAll('.module-card');
