@@ -1537,12 +1537,12 @@ function checkBudgetPacing() {
                 id: 1,
                 title: 'The Ad Rank Formula Myth',
                 type: 'lessons',
-                duration: '45 minutes',
+                duration: '2 hours',
                 content: {
                     overview: `Discover why the commonly taught "Ad Rank = Bid × Quality Score" formula is oversimplified and understand what Google actually uses.`,
                     lessons: [
                         {
-                            title: 'Industry Misconceptions',
+                            title: 'Lesson 1: Industry Misconceptions',
                             content: `
                                 <div class="alert-box">
                                     <div class="alert-icon">⚠️</div>
@@ -1588,7 +1588,199 @@ function checkBudgetPacing() {
                                         </p>
                                     </div>
                                 </div>
+
+                                <h4>The 6 Real Factors That Determine Your Ad Rank</h4>
+                                
+                                <div class="six-factors" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                                    <div class="factor-item">
+                                        <span class="factor-number">1</span>
+                                        <div class="factor-title">Your Bid</div>
+                                        <p>The maximum you're willing to pay per click. You often pay less than this maximum.</p>
+                                    </div>
+
+                                    <div class="factor-item">
+                                        <span class="factor-number">2</span>
+                                        <div class="factor-title">Ad & Landing Page Quality</div>
+                                        <p>Relevance, usefulness, navigation ease. Summarized in your Quality Score (1-10).</p>
+                                    </div>
+
+                                    <div class="factor-item">
+                                        <span class="factor-number">3</span>
+                                        <div class="factor-title">Ad Rank Thresholds</div>
+                                        <p>Minimum quality standards your ad must meet to show at all.</p>
+                                    </div>
+
+                                    <div class="factor-item">
+                                        <span class="factor-number">4</span>
+                                        <div class="factor-title">Auction Competitiveness</div>
+                                        <p>How close your competitors' Ad Ranks are to yours.</p>
+                                    </div>
+
+                                    <div class="factor-item">
+                                        <span class="factor-number">5</span>
+                                        <div class="factor-title">Search Context</div>
+                                        <p>User's location, device, time of search, search terms.</p>
+                                    </div>
+
+                                    <div class="factor-item">
+                                        <span class="factor-number">6</span>
+                                        <div class="factor-title">Ad Assets & Formats</div>
+                                        <p>Expected impact of extensions like sitelinks, callouts.</p>
+                                    </div>
+                                </div>
                             `
+                        },
+                        {
+                            title: 'Lesson 2: Understanding Ad Rank Thresholds',
+                            content: `
+                                <h4>Multiple Auction System</h4>
+                                <p>Google runs multiple auctions with different thresholds for each ad position.</p>
+
+                                <div class="threshold-visual" style="background: white; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                                    <h5 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Ad Position Thresholds</h5>
+                                    
+                                    <div style="background: linear-gradient(to top, #ffeaa7 0%, #fdcb6e 50%, #f39c12 100%); padding: 2rem; border-radius: 8px; position: relative; min-height: 400px;">
+                                        <div style="position: absolute; top: 10%; left: 0; right: 0; padding: 1rem; background: rgba(66, 133, 244, 0.9); color: white;">
+                                            <strong>Absolute Top Position</strong><br>
+                                            Threshold: 40+ Ad Rank<br>
+                                            Premium visibility above all results
+                                        </div>
+                                        
+                                        <div style="position: absolute; top: 40%; left: 0; right: 0; padding: 1rem; background: rgba(52, 168, 83, 0.9); color: white;">
+                                            <strong>Top Positions</strong><br>
+                                            Threshold: 20+ Ad Rank<br>
+                                            Above organic results
+                                        </div>
+                                        
+                                        <div style="position: absolute; top: 70%; left: 0; right: 0; padding: 1rem; background: rgba(234, 67, 53, 0.9); color: white;">
+                                            <strong>Other Positions</strong><br>
+                                            Threshold: 0+ Ad Rank<br>
+                                            Bottom or side of page
+                                        </div>
+                                    </div>
+                                    
+                                    <p style="text-align: center; margin-top: 1rem; font-style: italic;">
+                                        Ads with negative Ad Rank scores are ineligible to show anywhere
+                                    </p>
+                                </div>
+
+                                <h4>Key Insights</h4>
+                                <ul>
+                                    <li>Higher positions require exponentially higher Ad Rank</li>
+                                    <li>Quality Score can help you meet thresholds with lower bids</li>
+                                    <li>Some keywords have higher minimum thresholds than others</li>
+                                    <li>Thresholds change based on search context and competition</li>
+                                </ul>
+                            `
+                        },
+                        {
+                            title: 'Lesson 3: Auction Simulation',
+                            content: `
+                                <h4>Live Auction Example</h4>
+                                <p>See how different advertisers compete and what they actually pay.</p>
+
+                                <div class="auction-simulation">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background: var(--primary); color: white;">
+                                                <th style="padding: 1rem;">Advertiser</th>
+                                                <th>Max Bid</th>
+                                                <th>Quality Score</th>
+                                                <th>Ad Rank</th>
+                                                <th>Position</th>
+                                                <th>Actual CPC</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding: 1rem;"><strong>Company A</strong></td>
+                                                <td>$1.00</td>
+                                                <td>10 ⭐</td>
+                                                <td>80</td>
+                                                <td><span class="position-badge" style="background: #ffd700; padding: 0.3rem 0.8rem; border-radius: 20px;">1st - Top</span></td>
+                                                <td><strong>$0.51</strong></td>
+                                            </tr>
+                                            <tr style="background: #f8f9fa;">
+                                                <td style="padding: 1rem;"><strong>Company B</strong></td>
+                                                <td>$2.00</td>
+                                                <td>5 ⭐</td>
+                                                <td>50</td>
+                                                <td><span class="position-badge" style="background: #c0c0c0; padding: 0.3rem 0.8rem; border-radius: 20px;">2nd</span></td>
+                                                <td><strong>$1.01</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 1rem;"><strong>Company C</strong></td>
+                                                <td>$1.50</td>
+                                                <td>4 ⭐</td>
+                                                <td>30</td>
+                                                <td><span class="position-badge" style="background: #cd7f32; color: white; padding: 0.3rem 0.8rem; border-radius: 20px;">3rd</span></td>
+                                                <td><strong>$0.61</strong></td>
+                                            </tr>
+                                            <tr style="background: #f8f9fa;">
+                                                <td style="padding: 1rem;"><strong>Company D</strong></td>
+                                                <td>$3.00</td>
+                                                <td>2 ⭐</td>
+                                                <td>10</td>
+                                                <td><span class="position-badge" style="background: #666; color: white; padding: 0.3rem 0.8rem; border-radius: 20px;">4th</span></td>
+                                                <td><strong>Min. bid</strong></td>
+                                            </tr>
+                                            <tr style="opacity: 0.5;">
+                                                <td style="padding: 1rem;"><strong>Company E</strong></td>
+                                                <td>$2.50</td>
+                                                <td>1 ⭐</td>
+                                                <td>-10</td>
+                                                <td><span class="position-badge" style="background: #ea4335; color: white; padding: 0.3rem 0.8rem; border-radius: 20px;">Not Shown</span></td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div style="margin-top: 2rem; padding: 1.5rem; background: #e8f5e9; border-radius: 8px;">
+                                    <strong>💡 Key Observations:</strong>
+                                    <ul style="margin-top: 0.5rem;">
+                                        <li>Company A pays only $0.51 despite bidding $1.00 (thanks to high quality)</li>
+                                        <li>Company B pays more than Company A despite lower position (due to poor quality)</li>
+                                        <li>Company E doesn't show at all - negative Ad Rank below threshold</li>
+                                        <li>Higher Quality Score = Lower actual CPC for the same position</li>
+                                    </ul>
+                                </div>
+                            `
+                        }
+                    ],
+                    quiz: [
+                        {
+                            question: 'What is the real Ad Rank formula according to Google?',
+                            options: [
+                                'Ad Rank = Bid × Quality Score',
+                                'Ad Rank = f(6 factors including bid, quality, context, etc.)',
+                                'Ad Rank = CPC × CTR',
+                                'Ad Rank = Quality Score × Extensions'
+                            ],
+                            correct: 1,
+                            explanation: 'Google uses 6 factors: bid, quality, thresholds, competition, context, and extensions.'
+                        },
+                        {
+                            question: 'If a competitor\'s Ad Rank is 50 and your Quality Score is 10, what\'s your actual CPC?',
+                            options: [
+                                '$5.00',
+                                '$5.01',
+                                '$10.00',
+                                '$0.50'
+                            ],
+                            correct: 1,
+                            explanation: 'Actual CPC = (Ad Rank to beat ÷ Your QS) + $0.01 = (50 ÷ 10) + $0.01 = $5.01'
+                        },
+                        {
+                            question: 'Which factor is NOT one of Google\'s 6 Ad Rank factors?',
+                            options: [
+                                'Your bid amount',
+                                'Search context',
+                                'Keyword match type',
+                                'Ad extensions'
+                            ],
+                            correct: 2,
+                            explanation: 'Keyword match type affects which auctions you enter, but isn\'t a direct Ad Rank factor.'
                         }
                     ]
                 }
@@ -1597,25 +1789,25 @@ function checkBudgetPacing() {
                 id: 2,
                 title: 'Modern CPC Strategy',
                 type: 'lessons',
-                duration: '60 minutes',
+                duration: '2.5 hours',
                 content: {
                     overview: `Learn how CPC actually works in 2024 and master strategies to reduce costs while maintaining performance.`,
                     lessons: [
                         {
-                            title: 'The Real CPC Formula',
+                            title: 'Lesson 1: The Real CPC Formula',
                             content: `
                                 <h4>How Google Actually Calculates Your CPC</h4>
                                 
-                                <div class="formula-breakdown">
-                                    <div class="main-formula">
-                                        <h5>The Actual CPC Formula:</h5>
-                                        <code>
-                                            Actual CPC = (Ad Rank to beat ÷ Your Quality Score) + $0.01
-                                        </code>
+                                <div class="formula-breakdown" style="background: white; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                                    <div class="main-formula" style="text-align: center; margin-bottom: 2rem;">
+                                        <h5>The Actual CPC Formula (Confirmed by Google):</h5>
+                                        <div style="font-size: 1.3rem; padding: 1.5rem; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 8px; margin: 1rem 0;">
+                                            <code>Actual CPC = (Ad Rank to beat ÷ Your Quality Score) + $0.01</code>
+                                        </div>
                                     </div>
                                     
                                     <div class="formula-components">
-                                        <h5>Where:</h5>
+                                        <h5>Breaking It Down:</h5>
                                         <ul>
                                             <li><strong>Ad Rank to beat:</strong> The Ad Rank of the advertiser below you</li>
                                             <li><strong>Your Quality Score:</strong> Your keyword's Quality Score (1-10)</li>
@@ -1624,15 +1816,201 @@ function checkBudgetPacing() {
                                     </div>
                                 </div>
 
-                                <h4>CPC Optimization Strategies</h4>
-                                <ol>
-                                    <li><strong>Improve Quality Score:</strong> Can reduce CPC by up to 50%</li>
-                                    <li><strong>Use negative keywords:</strong> Prevent irrelevant clicks</li>
-                                    <li><strong>Optimize for long-tail:</strong> Lower competition, lower CPCs</li>
-                                    <li><strong>Dayparting:</strong> Bid higher only during profitable hours</li>
-                                    <li><strong>Geographic targeting:</strong> Focus on high-converting locations</li>
-                                </ol>
+                                <h4>CPC by Quality Score Impact</h4>
+                                <table style="width: 100%; margin: 2rem 0;">
+                                    <thead>
+                                        <tr style="background: var(--primary); color: white;">
+                                            <th style="padding: 1rem;">Quality Score</th>
+                                            <th>CPC Adjustment</th>
+                                            <th>Example: $2 baseline</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding: 1rem; text-align: center;">10</td>
+                                            <td style="color: green;">-50%</td>
+                                            <td><strong>$1.00</strong></td>
+                                        </tr>
+                                        <tr style="background: #f8f9fa;">
+                                            <td style="padding: 1rem; text-align: center;">8-9</td>
+                                            <td style="color: green;">-25%</td>
+                                            <td><strong>$1.50</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 1rem; text-align: center;">7</td>
+                                            <td>0%</td>
+                                            <td><strong>$2.00</strong></td>
+                                        </tr>
+                                        <tr style="background: #f8f9fa;">
+                                            <td style="padding: 1rem; text-align: center;">5-6</td>
+                                            <td style="color: orange;">+25%</td>
+                                            <td><strong>$2.50</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 1rem; text-align: center;">1-4</td>
+                                            <td style="color: red;">+200%</td>
+                                            <td><strong>$6.00</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             `
+                        },
+                        {
+                            title: 'Lesson 2: CPC Optimization Strategies',
+                            content: `
+                                <h4>Top 10 CPC Reduction Strategies</h4>
+                                
+                                <div class="strategy-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>1. Improve Quality Score</h5>
+                                        <p>Focus on CTR, relevance, and landing pages. Can reduce CPC by up to 50%.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>2. Use Negative Keywords</h5>
+                                        <p>Prevent irrelevant clicks. Review search terms weekly and add negatives.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>3. Long-tail Keywords</h5>
+                                        <p>Lower competition = lower CPCs. Target specific, intent-driven queries.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>4. Dayparting</h5>
+                                        <p>Bid higher only during profitable hours. Reduce or pause during low-conversion times.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>5. Geographic Targeting</h5>
+                                        <p>Focus budget on high-converting locations. Exclude poor-performing areas.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>6. Device Bid Adjustments</h5>
+                                        <p>Optimize bids per device type based on conversion data.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>7. SKAGs (Single Keyword Ad Groups)</h5>
+                                        <p>Maximum relevance = higher QS = lower CPCs.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>8. Test Different Match Types</h5>
+                                        <p>Phrase and exact match often have lower CPCs than broad match.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>9. Improve Ad Extensions</h5>
+                                        <p>Better Ad Rank without increasing bids. Use all relevant extensions.</p>
+                                    </div>
+                                    
+                                    <div class="strategy-card" style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <h5>10. Smart Bidding</h5>
+                                        <p>Let Google's AI optimize. Target CPA or ROAS can reduce wasteful clicks.</p>
+                                    </div>
+                                </div>
+
+                                <h4>The Modern Approach: Value Over Volume</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                                    <div style="padding: 2rem; background: #fee2e2; border-radius: 8px;">
+                                        <h5 style="color: #ea4335;">❌ Old Way</h5>
+                                        <ul>
+                                            <li>Chase low CPCs</li>
+                                            <li>Manual bid management</li>
+                                            <li>Volume-focused</li>
+                                            <li>Position-based goals</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div style="padding: 2rem; background: #dcfce7; border-radius: 8px;">
+                                        <h5 style="color: #34a853;">✅ New Way</h5>
+                                        <ul>
+                                            <li>Focus on profitable CPCs</li>
+                                            <li>Smart bidding strategies</li>
+                                            <li>Value-focused</li>
+                                            <li>ROAS-based goals</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `
+                        },
+                        {
+                            title: 'Lesson 3: Search Context & Its Impact',
+                            content: `
+                                <h4>How Search Context Affects Your CPC</h4>
+                                <p>Ad Rank is recalculated for every search based on real-time context.</p>
+
+                                <div class="context-factors" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                                    <div class="context-item" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <div style="font-size: 2.5rem;">📍</div>
+                                        <strong>Location</strong>
+                                        <p>User's geographic location affects relevance and competition</p>
+                                    </div>
+                                    <div class="context-item" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <div style="font-size: 2.5rem;">📱</div>
+                                        <strong>Device</strong>
+                                        <p>Mobile vs Desktop vs Tablet CPCs vary significantly</p>
+                                    </div>
+                                    <div class="context-item" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <div style="font-size: 2.5rem;">⏰</div>
+                                        <strong>Time</strong>
+                                        <p>Time of day and day of week affect competition</p>
+                                    </div>
+                                    <div class="context-item" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <div style="font-size: 2.5rem;">🔍</div>
+                                        <strong>Search Terms</strong>
+                                        <p>Exact query and user intent signal value</p>
+                                    </div>
+                                    <div class="context-item" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <div style="font-size: 2.5rem;">👤</div>
+                                        <strong>User Signals</strong>
+                                        <p>Search history and past behavior influence auction</p>
+                                    </div>
+                                    <div class="context-item" style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                                        <div style="font-size: 2.5rem;">📊</div>
+                                        <strong>Competition</strong>
+                                        <p>Other ads and organic results affect thresholds</p>
+                                    </div>
+                                </div>
+
+                                <h4>Practical Application</h4>
+                                <div style="padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; margin: 2rem 0;">
+                                    <h5 style="color: white;">💡 Pro Tips for Context Optimization</h5>
+                                    <ul style="margin-top: 1rem;">
+                                        <li>Use location bid adjustments for high-value areas</li>
+                                        <li>Separate mobile and desktop campaigns for better control</li>
+                                        <li>Implement dayparting based on conversion data</li>
+                                        <li>Create RLSA campaigns for past visitors (different context)</li>
+                                        <li>Use audience layering to bid differently for valuable segments</li>
+                                    </ul>
+                                </div>
+                            `
+                        }
+                    ],
+                    quiz: [
+                        {
+                            question: 'What\'s the most effective way to reduce CPC?',
+                            options: [
+                                'Lower your bids',
+                                'Improve Quality Score',
+                                'Pause campaigns',
+                                'Use broad match only'
+                            ],
+                            correct: 1,
+                            explanation: 'Improving Quality Score can reduce CPC by up to 50% while maintaining position.'
+                        },
+                        {
+                            question: 'Which strategy focuses on the modern approach to CPC?',
+                            options: [
+                                'Always aim for position 1',
+                                'Get the lowest CPC possible',
+                                'Focus on profitable CPCs and ROAS',
+                                'Only use exact match keywords'
+                            ],
+                            correct: 2,
+                            explanation: 'Modern PPC focuses on value and profitability, not just low costs.'
                         }
                     ]
                 }
@@ -1641,48 +2019,264 @@ function checkBudgetPacing() {
                 id: 3,
                 title: 'Quality Score Revolution',
                 type: 'lessons',
-                duration: '90 minutes',
+                duration: '2 hours',
                 content: {
                     overview: `Deep dive into Quality Score components and advanced optimization techniques that top agencies use.`,
                     lessons: [
                         {
-                            title: 'Quality Score Mastery',
+                            title: 'Lesson 1: The Three Pillars of Quality Score',
                             content: `
-                                <h4>The Three Pillars of Quality Score</h4>
+                                <h4>Quality Score Components Breakdown</h4>
                                 
-                                <div class="qs-components">
-                                    <div class="component">
-                                        <h5>1. Expected CTR (40% weight)</h5>
-                                        <ul>
-                                            <li>Based on historical performance</li>
-                                            <li>Compared to competitors</li>
-                                            <li>Normalized for position</li>
+                                <div class="qs-components" style="margin: 2rem 0;">
+                                    <div class="component" style="padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; margin-bottom: 1.5rem;">
+                                        <h5 style="color: white; font-size: 1.3rem;">1. Expected CTR (40% weight)</h5>
+                                        <ul style="margin: 1rem 0;">
+                                            <li>Based on historical performance of keyword</li>
+                                            <li>Compared to other advertisers on same keyword</li>
+                                            <li>Normalized for ad position</li>
+                                            <li>Account history matters</li>
                                         </ul>
-                                        <p><strong>Optimization:</strong> Test ad copy variations, use emotional triggers</p>
+                                        <div style="padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin-top: 1rem;">
+                                            <strong>Optimization Tactics:</strong>
+                                            <ul style="margin-top: 0.5rem;">
+                                                <li>Write compelling, emotional headlines</li>
+                                                <li>Include keywords in ad copy</li>
+                                                <li>Use numbers and symbols</li>
+                                                <li>Test urgency and scarcity</li>
+                                                <li>A/B test continuously</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                     
-                                    <div class="component">
-                                        <h5>2. Ad Relevance (30% weight)</h5>
-                                        <ul>
-                                            <li>Keyword to ad copy match</li>
-                                            <li>Search intent alignment</li>
-                                            <li>Message consistency</li>
+                                    <div class="component" style="padding: 2rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 12px; margin-bottom: 1.5rem;">
+                                        <h5 style="color: white; font-size: 1.3rem;">2. Ad Relevance (30% weight)</h5>
+                                        <ul style="margin: 1rem 0;">
+                                            <li>How well ad matches search intent</li>
+                                            <li>Keyword to ad copy alignment</li>
+                                            <li>Message consistency throughout</li>
+                                            <li>Semantic understanding by Google</li>
                                         </ul>
-                                        <p><strong>Optimization:</strong> Include keywords in headlines, match user intent</p>
+                                        <div style="padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin-top: 1rem;">
+                                            <strong>Optimization Tactics:</strong>
+                                            <ul style="margin-top: 0.5rem;">
+                                                <li>Use keyword in headlines (especially H1)</li>
+                                                <li>Mirror search query language</li>
+                                                <li>Create tightly themed ad groups</li>
+                                                <li>Use dynamic keyword insertion carefully</li>
+                                                <li>Write specific ads for each keyword theme</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                     
-                                    <div class="component">
-                                        <h5>3. Landing Page Experience (30% weight)</h5>
-                                        <ul>
-                                            <li>Page load speed</li>
-                                            <li>Mobile friendliness</li>
-                                            <li>Relevant content</li>
+                                    <div class="component" style="padding: 2rem; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 12px;">
+                                        <h5 style="color: white; font-size: 1.3rem;">3. Landing Page Experience (30% weight)</h5>
+                                        <ul style="margin: 1rem 0;">
+                                            <li>Page load speed (Core Web Vitals)</li>
+                                            <li>Mobile-friendliness</li>
+                                            <li>Relevant, original content</li>
                                             <li>Transparency and trustworthiness</li>
+                                            <li>Easy navigation</li>
                                         </ul>
-                                        <p><strong>Optimization:</strong> Improve page speed, ensure message match</p>
+                                        <div style="padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; margin-top: 1rem;">
+                                            <strong>Optimization Tactics:</strong>
+                                            <ul style="margin-top: 0.5rem;">
+                                                <li>Achieve &lt;3 second load time</li>
+                                                <li>Ensure message match with ads</li>
+                                                <li>Place key content above fold</li>
+                                                <li>Add trust signals (testimonials, badges)</li>
+                                                <li>Clear CTAs and easy navigation</li>
+                                                <li>Optimize for mobile first</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             `
+                        },
+                        {
+                            title: 'Lesson 2: Quality Score Optimization Playbook',
+                            content: `
+                                <h4>Step-by-Step Quality Score Improvement</h4>
+                                
+                                <div class="playbook-steps" style="margin: 2rem 0;">
+                                    <div style="padding: 1.5rem; background: #f8f9fa; border-left: 4px solid var(--primary); margin-bottom: 1rem;">
+                                        <h5>Step 1: Audit Current Quality Scores</h5>
+                                        <ul>
+                                            <li>Export all keywords with QS data</li>
+                                            <li>Identify keywords with QS &lt; 7</li>
+                                            <li>Check component scores (CTR, relevance, landing page)</li>
+                                            <li>Prioritize high-volume, high-value keywords</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div style="padding: 1.5rem; background: #f8f9fa; border-left: 4px solid var(--secondary); margin-bottom: 1rem;">
+                                        <h5>Step 2: Fix Landing Page Issues</h5>
+                                        <ul>
+                                            <li>Run PageSpeed Insights test</li>
+                                            <li>Fix Core Web Vitals issues</li>
+                                            <li>Ensure mobile responsiveness</li>
+                                            <li>Match H1 to ad headlines</li>
+                                            <li>Add relevant, valuable content</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div style="padding: 1.5rem; background: #f8f9fa; border-left: 4px solid var(--warning); margin-bottom: 1rem;">
+                                        <h5>Step 3: Improve Ad Relevance</h5>
+                                        <ul>
+                                            <li>Restructure campaigns into tighter themes</li>
+                                            <li>Create SKAGs for important keywords</li>
+                                            <li>Include keywords in headlines</li>
+                                            <li>Write 10+ ads per ad group</li>
+                                            <li>Use all available ad space</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div style="padding: 1.5rem; background: #f8f9fa; border-left: 4px solid var(--danger); margin-bottom: 1rem;">
+                                        <h5>Step 4: Boost Expected CTR</h5>
+                                        <ul>
+                                            <li>Test emotional triggers</li>
+                                            <li>Add numbers and statistics</li>
+                                            <li>Use power words</li>
+                                            <li>Create urgency/scarcity</li>
+                                            <li>Implement ad customizers</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div style="padding: 1.5rem; background: #f8f9fa; border-left: 4px solid #9c27b0; margin-bottom: 1rem;">
+                                        <h5>Step 5: Monitor and Iterate</h5>
+                                        <ul>
+                                            <li>Check QS weekly</li>
+                                            <li>A/B test continuously</li>
+                                            <li>Pause poor performers</li>
+                                            <li>Scale winners</li>
+                                            <li>Document what works</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h4>Quality Score Myths Debunked</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                                    <div style="padding: 1.5rem; background: #fee2e2; border-radius: 8px;">
+                                        <h5 style="color: #ea4335;">❌ Myth</h5>
+                                        <p>"Quality Score is updated in real-time"</p>
+                                        <strong>Reality:</strong> Display QS updates periodically, but auction-time QS is real-time
+                                    </div>
+                                    
+                                    <div style="padding: 1.5rem; background: #fee2e2; border-radius: 8px;">
+                                        <h5 style="color: #ea4335;">❌ Myth</h5>
+                                        <p>"Pausing keywords hurts Quality Score"</p>
+                                        <strong>Reality:</strong> No impact when paused, history remains
+                                    </div>
+                                    
+                                    <div style="padding: 1.5rem; background: #fee2e2; border-radius: 8px;">
+                                        <h5 style="color: #ea4335;">❌ Myth</h5>
+                                        <p>"Higher bids improve Quality Score"</p>
+                                        <strong>Reality:</strong> Bids don't affect QS directly
+                                    </div>
+                                    
+                                    <div style="padding: 1.5rem; background: #fee2e2; border-radius: 8px;">
+                                        <h5 style="color: #ea4335;">❌ Myth</h5>
+                                        <p>"Display Network affects Search QS"</p>
+                                        <strong>Reality:</strong> They're calculated separately
+                                    </div>
+                                </div>
+                            `
+                        },
+                        {
+                            title: 'Lesson 3: Advanced Quality Score Tactics',
+                            content: `
+                                <h4>Pro-Level Quality Score Strategies</h4>
+                                
+                                <div class="advanced-tactics">
+                                    <h5>1. The SKAG Method (Single Keyword Ad Groups)</h5>
+                                    <div style="padding: 1.5rem; background: #e8f5e9; border-radius: 8px; margin: 1rem 0;">
+                                        <p><strong>Structure:</strong></p>
+                                        <ul>
+                                            <li>1 keyword per ad group (all 3 match types)</li>
+                                            <li>3-5 highly specific ads</li>
+                                            <li>Dedicated landing page</li>
+                                        </ul>
+                                        <p style="margin-top: 1rem;"><strong>Result:</strong> Maximum relevance = QS 9-10</p>
+                                    </div>
+                                    
+                                    <h5>2. The Alpha/Beta Campaign Structure</h5>
+                                    <div style="padding: 1.5rem; background: #e3f2fd; border-radius: 8px; margin: 1rem 0;">
+                                        <p><strong>Alpha Campaigns:</strong> High QS exact match keywords only</p>
+                                        <p><strong>Beta Campaigns:</strong> Modified broad for discovery</p>
+                                        <p style="margin-top: 1rem;">Mine search terms from Beta → Graduate to Alpha when QS proven</p>
+                                    </div>
+                                    
+                                    <h5>3. Landing Page Templates by Intent</h5>
+                                    <div style="padding: 1.5rem; background: #fce4ec; border-radius: 8px; margin: 1rem 0;">
+                                        <ul>
+                                            <li><strong>Informational:</strong> Content-rich, educational</li>
+                                            <li><strong>Commercial:</strong> Comparison tables, reviews</li>
+                                            <li><strong>Transactional:</strong> Simple, fast conversion path</li>
+                                            <li><strong>Navigational:</strong> Brand-focused, trust signals</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <h5>4. Dynamic Landing Pages</h5>
+                                    <div style="padding: 1.5rem; background: #f3e5f5; border-radius: 8px; margin: 1rem 0;">
+                                        <p>Use URL parameters to dynamically adjust:</p>
+                                        <ul>
+                                            <li>H1 headline to match search query</li>
+                                            <li>Hero image based on audience</li>
+                                            <li>CTA text based on keyword intent</li>
+                                            <li>Testimonials relevant to segment</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h4>Quality Score Recovery Plan</h4>
+                                <div style="padding: 2rem; background: linear-gradient(135deg, #fa8231 0%, #fd5e53 100%); color: white; border-radius: 12px; margin: 2rem 0;">
+                                    <h5 style="color: white;">🚨 Emergency QS Fix (When QS &lt; 5)</h5>
+                                    <ol style="margin-top: 1rem;">
+                                        <li><strong>Day 1:</strong> Pause keyword temporarily</li>
+                                        <li><strong>Day 2-3:</strong> Create new SKAG structure</li>
+                                        <li><strong>Day 4-5:</strong> Write 10 new ads with keyword in H1</li>
+                                        <li><strong>Day 6-7:</strong> Build dedicated landing page</li>
+                                        <li><strong>Day 8:</strong> Relaunch with lower bid</li>
+                                        <li><strong>Day 9-15:</strong> Monitor and optimize CTR</li>
+                                        <li><strong>Day 16+:</strong> Gradually increase bid as QS improves</li>
+                                    </ol>
+                                </div>
+                            `
+                        }
+                    ],
+                    quiz: [
+                        {
+                            question: 'Which Quality Score component has the highest weight?',
+                            options: [
+                                'Landing Page Experience',
+                                'Ad Relevance',
+                                'Expected CTR',
+                                'All are equal'
+                            ],
+                            correct: 2,
+                            explanation: 'Expected CTR has 40% weight, while Ad Relevance and Landing Page each have 30%.'
+                        },
+                        {
+                            question: 'What is a SKAG?',
+                            options: [
+                                'A type of bid strategy',
+                                'Single Keyword Ad Group',
+                                'Search Keyword Audit Guide',
+                                'Smart Keyword Algorithm by Google'
+                            ],
+                            correct: 1,
+                            explanation: 'SKAG stands for Single Keyword Ad Group - a structure for maximum relevance.'
+                        },
+                        {
+                            question: 'What Quality Score should you aim for?',
+                            options: [
+                                '5 or above',
+                                '6 or above',
+                                '7 or above',
+                                '10 only'
+                            ],
+                            correct: 2,
+                            explanation: 'QS of 7+ is considered good and provides CPC benefits. Below 7 means paying premium.'
                         }
                     ]
                 }
