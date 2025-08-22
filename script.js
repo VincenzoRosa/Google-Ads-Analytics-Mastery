@@ -1,5 +1,16 @@
+// Current active course
+let currentCourse = null;
+
 // Navigation functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Load saved progress from localStorage
+    if (typeof loadSavedProgress === 'function') {
+        loadSavedProgress();
+    }
+    
+    // Initialize course catalog
+    initializeCatalog();
+    
     // Navigation
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
@@ -18,6 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show corresponding section
             const targetId = this.getAttribute('href').substring(1);
             document.getElementById(targetId).classList.add('active');
+            
+            // Update view based on section
+            if (targetId === 'catalog') {
+                displayCourses('all');
+            } else if (targetId === 'my-courses') {
+                displayEnrolledCourses();
+            } else if (targetId === 'dashboard') {
+                updateDashboard();
+            }
         });
     });
 
@@ -27,17 +47,512 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('click', function() {
             const moduleId = this.getAttribute('data-module');
             if (this.classList.contains('active') || this.classList.contains('completed')) {
-                openModule(moduleId);
+                openModule(moduleId, currentCourse);
             }
         });
     });
 
     // Initialize progress on page load
     updateProgress();
+    
+    // Initialize course filters
+    initializeCourseFilters();
+    
+    // Initialize dashboard
+    updateDashboard();
 });
 
+// Initialize course catalog
+function initializeCatalog() {
+    updatePlatformStats();
+    displayCourses('all');
+}
 
+// Update platform statistics
+function updatePlatformStats() {
+    if (typeof getCourseStats === 'function') {
+        const stats = getCourseStats();
+        
+        const totalCoursesEl = document.getElementById('total-courses');
+        const enrolledCoursesEl = document.getElementById('enrolled-courses');
+        const completedCoursesEl = document.getElementById('completed-courses');
+        const totalHoursEl = document.getElementById('total-hours');
+        
+        if (totalCoursesEl) totalCoursesEl.textContent = stats.totalCourses;
+        if (enrolledCoursesEl) enrolledCoursesEl.textContent = stats.enrolledCourses;
+        if (completedCoursesEl) completedCoursesEl.textContent = stats.completedCourses;
+        if (totalHoursEl) totalHoursEl.textContent = stats.totalHours + '+';
+    }
+}
 
+// Initialize course filter buttons
+function initializeCourseFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active state
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Display filtered courses
+            const filter = this.getAttribute('data-filter');
+            displayCourses(filter);
+        });
+    });
+}
+
+// Display courses based on filter
+function displayCourses(filter) {
+    const coursesGrid = document.getElementById('courses-grid');
+    if (!coursesGrid || typeof getAllCourses !== 'function') return;
+    
+    let coursesToDisplay = [];
+    
+    switch(filter) {
+        case 'enrolled':
+            coursesToDisplay = getEnrolledCourses();
+            break;
+        case 'available':
+            coursesToDisplay = getAvailableCourses();
+            break;
+        case 'coming-soon':
+            coursesToDisplay = getComingSoonCourses();
+            break;
+        default: // 'all'
+            coursesToDisplay = getAllCourses();
+    }
+    
+    // Clear grid
+    coursesGrid.innerHTML = '';
+    
+    // Display courses
+    coursesToDisplay.forEach(course => {
+        const courseCard = createCourseCard(course);
+        coursesGrid.appendChild(courseCard);
+    });
+    
+    // Show message if no courses
+    if (coursesToDisplay.length === 0) {
+        coursesGrid.innerHTML = `
+            <div class="no-courses-message">
+                <i class="fas fa-inbox"></i>
+                <p>No courses found in this category</p>
+            </div>
+        `;
+    }
+}
+
+// Create course card element
+function createCourseCard(course) {
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    if (course.enrolled) card.classList.add('enrolled');
+    if (course.comingSoon) card.classList.add('coming-soon');
+    
+    const progressRing = course.enrolled ? `
+        <div class="course-progress-ring">
+            <svg width="60" height="60">
+                <circle cx="30" cy="30" r="25" stroke="#e0e0e0" stroke-width="5" fill="none"/>
+                <circle cx="30" cy="30" r="25" stroke="${course.color}" stroke-width="5" fill="none"
+                        stroke-dasharray="${157 * course.progress / 100} 157"
+                        transform="rotate(-90 30 30)"/>
+            </svg>
+            <span class="progress-text">${course.progress}%</span>
+        </div>
+    ` : '';
+    
+    const actionButton = course.comingSoon ? 
+        `<button class="btn btn-disabled" disabled>Coming Soon</button>` :
+        course.enrolled ? 
+        `<button class="btn btn-primary" onclick="openCourse('${course.id}')">Continue Learning</button>` :
+        `<button class="btn btn-outline" onclick="enrollCourse('${course.id}')">Enroll Now</button>`;
+    
+    card.innerHTML = `
+        <div class="course-header" style="background: linear-gradient(135deg, ${course.color}22 0%, ${course.color}11 100%);">
+            <i class="${course.icon}" style="color: ${course.color}; font-size: 2rem;"></i>
+            ${progressRing}
+        </div>
+        <div class="course-body">
+            <h3>${course.title}</h3>
+            <p class="course-subtitle">${course.subtitle}</p>
+            <p class="course-description">${course.description}</p>
+            <div class="course-meta">
+                <span><i class="fas fa-clock"></i> ${course.duration}</span>
+                <span><i class="fas fa-signal"></i> ${course.difficulty}</span>
+            </div>
+            ${course.modules ? `
+                <div class="course-modules-count">
+                    <i class="fas fa-book-open"></i> ${course.modules.length} Modules
+                </div>
+            ` : ''}
+            <div class="course-tags">
+                ${course.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+        </div>
+        <div class="course-footer">
+            ${actionButton}
+        </div>
+    `;
+    
+    return card;
+}
+
+// Display enrolled courses in My Courses section
+function displayEnrolledCourses() {
+    const container = document.getElementById('enrolled-courses');
+    if (!container || typeof getEnrolledCourses !== 'function') return;
+    
+    const enrolledCourses = getEnrolledCourses();
+    
+    container.innerHTML = '';
+    
+    if (enrolledCourses.length === 0) {
+        container.innerHTML = `
+            <div class="no-courses-message">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>No Enrolled Courses Yet</h3>
+                <p>Start your learning journey by enrolling in a course from the catalog</p>
+                <button class="btn btn-primary" onclick="showCatalog()">Browse Courses</button>
+            </div>
+        `;
+        return;
+    }
+    
+    enrolledCourses.forEach(course => {
+        const courseProgress = createEnrolledCourseCard(course);
+        container.appendChild(courseProgress);
+    });
+}
+
+// Create enrolled course card with detailed progress
+function createEnrolledCourseCard(course) {
+    const card = document.createElement('div');
+    card.className = 'enrolled-course-card';
+    
+    const completedModules = course.modules ? course.modules.filter(m => m.completed).length : 0;
+    const totalModules = course.modules ? course.modules.length : 0;
+    
+    card.innerHTML = `
+        <div class="enrolled-course-header">
+            <div class="course-info">
+                <i class="${course.icon}" style="color: ${course.color}; font-size: 2rem;"></i>
+                <div>
+                    <h3>${course.title}</h3>
+                    <p>${course.subtitle}</p>
+                </div>
+            </div>
+            <div class="course-overall-progress">
+                <div class="progress-circle-large">
+                    <svg width="80" height="80">
+                        <circle cx="40" cy="40" r="35" stroke="#e0e0e0" stroke-width="6" fill="none"/>
+                        <circle cx="40" cy="40" r="35" stroke="${course.color}" stroke-width="6" fill="none"
+                                stroke-dasharray="${220 * course.progress / 100} 220"
+                                transform="rotate(-90 40 40)"/>
+                    </svg>
+                    <div class="progress-info">
+                        <span class="progress-percent">${course.progress}%</span>
+                        <span class="progress-label">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        ${course.modules ? `
+            <div class="enrolled-course-modules">
+                <h4>Module Progress (${completedModules}/${totalModules} completed)</h4>
+                <div class="modules-progress-list">
+                    ${course.modules.map(module => `
+                        <div class="module-progress-item ${module.completed ? 'completed' : ''}">
+                            <i class="fas ${module.completed ? 'fa-check-circle' : 'fa-circle'}"></i>
+                            <span>${module.title}</span>
+                            <span class="module-duration">${module.duration}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        ` : ''}
+        <div class="enrolled-course-actions">
+            <button class="btn btn-primary" onclick="openCourse('${course.id}')">
+                <i class="fas fa-play"></i> Continue Learning
+            </button>
+            ${course.modules ? `
+                <button class="btn btn-outline" onclick="viewCourseDetails('${course.id}')">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            ` : ''}
+        </div>
+    `;
+    
+    return card;
+}
+
+// Open a specific course
+function openCourse(courseId) {
+    const course = getCourse(courseId);
+    if (!course) return;
+    
+    // All courses now use the unified viewer
+    window.location.href = `course-viewer.html?course=${courseId}`;
+}
+
+// Update module cards for a specific course
+function updateModuleCards(course) {
+    const moduleCards = document.querySelectorAll('.module-card');
+    
+    course.modules.forEach((module, index) => {
+        if (moduleCards[index]) {
+            const card = moduleCards[index];
+            card.querySelector('h3').textContent = `Module ${module.id}: ${module.title}`;
+            card.querySelector('p').textContent = module.description;
+            
+            // Update completion status
+            if (module.completed) {
+                card.classList.add('completed');
+                card.classList.remove('locked');
+            }
+            
+            // Update PDF download link
+            const downloadBtn = card.querySelector('.btn-outline');
+            if (downloadBtn && module.pdfFile) {
+                downloadBtn.setAttribute('href', module.pdfFile);
+            }
+        }
+    });
+}
+
+// Enroll in a course
+function enrollCourse(courseId) {
+    if (typeof enrollInCourse === 'function') {
+        enrollInCourse(courseId);
+        
+        // Update UI
+        updatePlatformStats();
+        displayCourses('all');
+        
+        // Show success message
+        showNotification(`Successfully enrolled in course!`, 'success');
+        
+        // Open the course
+        openCourse(courseId);
+    }
+}
+
+// Show catalog
+function showCatalog() {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    
+    const catalogLink = document.querySelector('a[href="#catalog"]');
+    const catalogSection = document.getElementById('catalog');
+    
+    if (catalogLink) catalogLink.classList.add('active');
+    if (catalogSection) catalogSection.classList.add('active');
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
+}
+
+// Update dashboard with dynamic content
+function updateDashboard() {
+    updateDashboardStats();
+    displayCurrentCourses();
+    displayRecentActivity();
+}
+
+// Update dashboard statistics
+function updateDashboardStats() {
+    const statsContainer = document.getElementById('dashboard-stats');
+    if (!statsContainer) return;
+    
+    const enrolledCourses = getEnrolledCourses();
+    const totalModules = enrolledCourses.reduce((sum, course) => sum + (course.modules ? course.modules.length : 0), 0);
+    const completedModules = enrolledCourses.reduce((sum, course) => {
+        return sum + (course.modules ? course.modules.filter(m => m.completed).length : 0);
+    }, 0);
+    const completedCourses = enrolledCourses.filter(c => c.progress === 100).length;
+    const averageProgress = enrolledCourses.length > 0 ? 
+        Math.round(enrolledCourses.reduce((sum, c) => sum + c.progress, 0) / enrolledCourses.length) : 0;
+    
+    statsContainer.innerHTML = `
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${enrolledCourses.length}</h3>
+                <p>Enrolled Courses</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${completedModules}</h3>
+                <p>Modules Completed</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${averageProgress}%</h3>
+                <p>Average Progress</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="stat-content">
+                <h3>${completedCourses}</h3>
+                <p>Completed Courses</p>
+            </div>
+        </div>
+    `;
+}
+
+// Display current courses on dashboard
+function displayCurrentCourses() {
+    const container = document.getElementById('current-courses');
+    if (!container) return;
+    
+    const enrolledCourses = getEnrolledCourses();
+    
+    if (enrolledCourses.length === 0) {
+        container.innerHTML = `
+            <div class="no-courses-message">
+                <p>No enrolled courses yet. <a href="#catalog" onclick="showCatalog()">Browse courses</a> to get started!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = enrolledCourses.slice(0, 3).map(course => {
+        const nextModule = course.modules ? course.modules.find(m => !m.completed) : null;
+        const progressWidth = course.progress || 0;
+        
+        return `
+            <div class="current-course-card">
+                <div class="course-progress-header">
+                    <div class="course-basic-info">
+                        <i class="${course.icon}" style="color: ${course.color};"></i>
+                        <div>
+                            <h3>${course.title}</h3>
+                            <p>Progress: ${progressWidth}%</p>
+                        </div>
+                    </div>
+                    <div class="course-progress-ring">
+                        <svg width="50" height="50">
+                            <circle cx="25" cy="25" r="20" stroke="#e0e0e0" stroke-width="4" fill="none"/>
+                            <circle cx="25" cy="25" r="20" stroke="${course.color}" stroke-width="4" fill="none"
+                                    stroke-dasharray="${126 * progressWidth / 100} 126"
+                                    transform="rotate(-90 25 25)"/>
+                        </svg>
+                        <span class="progress-text">${progressWidth}%</span>
+                    </div>
+                </div>
+                <div class="next-module">
+                    ${nextModule ? 
+                        `<p><strong>Next:</strong> ${nextModule.title}</p>` : 
+                        `<p><strong>Status:</strong> Course completed! 🎉</p>`
+                    }
+                </div>
+                <div class="course-actions">
+                    <button class="btn btn-sm" onclick="openCourse('${course.id}')">
+                        ${nextModule ? 'Continue Learning' : 'Review Course'}
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Display recent activity
+function displayRecentActivity() {
+    const container = document.getElementById('recent-activity');
+    if (!container) return;
+    
+    // Generate some mock recent activity based on enrolled courses
+    const enrolledCourses = getEnrolledCourses();
+    const activities = [];
+    
+    enrolledCourses.forEach(course => {
+        if (course.modules) {
+            const completedModules = course.modules.filter(m => m.completed);
+            const inProgressModule = course.modules.find(m => !m.completed);
+            
+            // Add completed modules to activity
+            completedModules.slice(-2).forEach((module, index) => {
+                activities.push({
+                    type: 'completed',
+                    title: `${course.title}: ${module.title}`,
+                    description: 'Module completed',
+                    time: `${(index + 1) * 15} minutes ago`,
+                    icon: 'fa-check',
+                    color: '#4caf50'
+                });
+            });
+            
+            // Add in-progress module
+            if (inProgressModule && course.progress > 0) {
+                activities.push({
+                    type: 'in-progress',
+                    title: `${course.title}: ${inProgressModule.title}`,
+                    description: 'Currently in progress',
+                    time: '2 minutes ago',
+                    icon: 'fa-play',
+                    color: '#ff9800'
+                });
+            }
+        }
+    });
+    
+    // Sort by most recent and limit to 4
+    const recentActivities = activities.slice(0, 4);
+    
+    if (recentActivities.length === 0) {
+        container.innerHTML = `
+            <div class="no-activity">
+                <p>No recent activity. Start a course to see your progress here!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = recentActivities.map(activity => `
+        <div class="activity-item">
+            <div class="activity-icon ${activity.type}" style="background: ${activity.color};">
+                <i class="fas ${activity.icon}"></i>
+            </div>
+            <div class="activity-content">
+                <h4>${activity.title}</h4>
+                <p>${activity.description}</p>
+                <span class="activity-time">${activity.time}</span>
+            </div>
+        </div>
+    `).join('');
+}
 
 
 

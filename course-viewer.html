@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Viewer - Google Ads Learning Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="course-viewer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="courses.js"></script>
+    <script src="course-content.js"></script>
+</head>
+<body>
+    <div class="course-viewer-container">
+        <!-- Course Header -->
+        <header class="course-header-bar">
+            <div class="course-nav-left">
+                <a href="index.html" class="back-to-platform">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Courses</span>
+                </a>
+                <div class="course-title-bar">
+                    <h1 id="course-title">Loading...</h1>
+                </div>
+            </div>
+            <div class="course-nav-right">
+                <div class="course-progress-bar">
+                    <div class="progress-fill" id="course-progress-fill"></div>
+                </div>
+                <span class="progress-text" id="course-progress-text">0% Complete</span>
+            </div>
+        </header>
+
+        <div class="course-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="course-sidebar">
+                <div class="module-list" id="module-list">
+                    <!-- Modules will be loaded here -->
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="course-content-area">
+                <div class="content-header">
+                    <h2 id="module-title">Welcome</h2>
+                    <div class="content-meta">
+                        <span id="module-duration"><i class="fas fa-clock"></i> Duration: --</span>
+                        <span id="module-type"><i class="fas fa-book"></i> Type: --</span>
+                    </div>
+                </div>
+
+                <div class="content-body" id="content-body">
+                    <!-- Content will be loaded here -->
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="content-navigation">
+                    <button class="nav-btn prev" id="prev-btn" onclick="navigateContent('prev')">
+                        <i class="fas fa-chevron-left"></i>
+                        <span>Previous</span>
+                    </button>
+                    
+                    <div class="progress-indicator">
+                        <span id="current-position">1</span> / <span id="total-items">1</span>
+                    </div>
+                    
+                    <button class="nav-btn next" id="next-btn" onclick="navigateContent('next')">
+                        <span>Next</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </main>
+
+            <!-- Right Panel (Resources/Notes) -->
+            <aside class="course-right-panel">
+                <div class="panel-tabs">
+                    <button class="panel-tab active" onclick="switchPanel('resources')">
+                        <i class="fas fa-folder"></i> Resources
+                    </button>
+                    <button class="panel-tab" onclick="switchPanel('notes')">
+                        <i class="fas fa-sticky-note"></i> Notes
+                    </button>
+                    <button class="panel-tab" onclick="switchPanel('help')">
+                        <i class="fas fa-question-circle"></i> Help
+                    </button>
+                </div>
+                
+                <div class="panel-content" id="panel-content">
+                    <div id="resources-panel" class="panel-section active">
+                        <h3>Module Resources</h3>
+                        <div class="resources-list" id="resources-list">
+                            <!-- Resources will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div id="notes-panel" class="panel-section">
+                        <h3>Your Notes</h3>
+                        <textarea id="course-notes" placeholder="Take notes here..."></textarea>
+                        <button class="btn btn-sm" onclick="saveNotes()">Save Notes</button>
+                    </div>
+                    
+                    <div id="help-panel" class="panel-section">
+                        <h3>Need Help?</h3>
+                        <div class="help-content">
+                            <h4>Navigation</h4>
+                            <ul>
+                                <li>Use arrow keys to navigate</li>
+                                <li>Press Space to mark complete</li>
+                                <li>Press Esc to return to courses</li>
+                            </ul>
+                            <h4>Progress</h4>
+                            <p>Your progress is automatically saved as you complete each section.</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="course-viewer.js"></script>
+</body>
+</html>
