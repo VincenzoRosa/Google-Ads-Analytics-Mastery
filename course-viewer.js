@@ -162,6 +162,10 @@ function loadLesson(lessonIndex) {
     currentLesson = lessonIndex;
     const lesson = lessons[lessonIndex];
     
+    // Check if this is the last lesson and if module has a quiz
+    const isLastLesson = lessonIndex === lessons.length - 1;
+    const moduleQuiz = currentModule.content.quiz;
+    
     // Update content
     const contentBody = document.getElementById('content-body');
     contentBody.innerHTML = `
@@ -169,6 +173,12 @@ function loadLesson(lessonIndex) {
             <h3>${lesson.title}</h3>
             ${lesson.content}
             ${lesson.quiz ? renderQuiz(lesson.quiz) : ''}
+            ${isLastLesson && moduleQuiz ? `
+                <div class="module-quiz-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border);">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;">📝 Module ${currentModule.id} Assessment</h3>
+                    ${renderQuiz(moduleQuiz)}
+                </div>
+            ` : ''}
         </div>
     `;
     
@@ -881,18 +891,21 @@ function downloadAudit() {
 // Render quiz
 function renderQuiz(quiz) {
     return `
-        <div class="quiz-container">
-            <h4>Quick Quiz</h4>
+        <div class="quiz-section">
+            <h4 style="margin-bottom: 1.5rem;">Test Your Knowledge</h4>
             ${quiz.map((q, index) => `
-                <div class="quiz-item" data-quiz-index="${index}">
-                    <div class="quiz-question">${q.question}</div>
+                <div class="quiz-question" data-quiz-index="${index}">
+                    <h5>Question ${index + 1}: ${q.question}</h5>
                     <div class="quiz-options">
                         ${q.options.map((option, optIndex) => `
-                            <div class="quiz-option" data-option-index="${optIndex}" onclick="selectQuizOption(${index}, ${optIndex}, ${q.correct})">
-                                ${option}
-                            </div>
+                            <label>
+                                <input type="radio" name="quiz-${index}" value="${optIndex}" 
+                                    onchange="selectQuizOption(${index}, ${optIndex}, ${q.correct}, '${q.explanation ? q.explanation.replace(/'/g, "\\'") : ''}')">
+                                <span>${option}</span>
+                            </label>
                         `).join('')}
                     </div>
+                    <div id="quiz-feedback-${index}" class="quiz-feedback" style="display: none; margin-top: 1rem;"></div>
                 </div>
             `).join('')}
         </div>
@@ -900,22 +913,41 @@ function renderQuiz(quiz) {
 }
 
 // Handle quiz selection
-function selectQuizOption(quizIndex, optionIndex, correctIndex) {
+function selectQuizOption(quizIndex, optionIndex, correctIndex, explanation) {
+    const feedbackDiv = document.getElementById(`quiz-feedback-${quizIndex}`);
+    
+    // Check if correct
+    const isCorrect = optionIndex === correctIndex;
+    
+    // Show feedback
+    feedbackDiv.style.display = 'block';
+    feedbackDiv.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+    feedbackDiv.innerHTML = `
+        <i class="fas fa-${isCorrect ? 'check-circle' : 'times-circle'}"></i>
+        <strong>${isCorrect ? 'Correct!' : 'Not quite right.'}</strong>
+        ${explanation ? `<p style="margin-top: 0.5rem;">${explanation}</p>` : ''}
+    `;
+    
+    // Update visual feedback on options
     const quizItem = document.querySelector(`[data-quiz-index="${quizIndex}"]`);
-    const options = quizItem.querySelectorAll('.quiz-option');
+    const labels = quizItem.querySelectorAll('label');
     
-    // Remove previous selections
-    options.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+    // Remove previous visual feedback
+    labels.forEach(label => {
+        label.style.background = '';
+        label.style.borderColor = '';
+    });
     
-    // Mark selected
-    options[optionIndex].classList.add('selected');
-    
-    // Show correct/incorrect
-    if (optionIndex === correctIndex) {
-        options[optionIndex].classList.add('correct');
+    // Add visual feedback for selected option
+    if (isCorrect) {
+        labels[optionIndex].style.background = 'rgba(72, 187, 120, 0.1)';
+        labels[optionIndex].style.borderColor = 'var(--success)';
     } else {
-        options[optionIndex].classList.add('incorrect');
-        options[correctIndex].classList.add('correct');
+        labels[optionIndex].style.background = 'rgba(245, 101, 101, 0.1)';
+        labels[optionIndex].style.borderColor = 'var(--danger)';
+        // Also highlight the correct answer
+        labels[correctIndex].style.background = 'rgba(72, 187, 120, 0.1)';
+        labels[correctIndex].style.borderColor = 'var(--success)';
     }
 }
 
