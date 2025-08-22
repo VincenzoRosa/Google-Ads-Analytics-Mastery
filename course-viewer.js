@@ -823,6 +823,82 @@ function openExercise(type, title, moduleId, exerciseIndex) {
                 </div>
             </div>
         `;
+    } else if (type === 'worksheet' && title === 'CPC Optimization Worksheet') {
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-coins"></i> CPC Optimization Worksheet</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>Analyze and optimize your CPC strategy for better ROI.</p>
+                    
+                    <div class="cpc-optimization-worksheet">
+                        <h4>Current Campaign Metrics</h4>
+                        <div class="metrics-input">
+                            <div class="form-group">
+                                <label>Current Average CPC ($):</label>
+                                <input type="number" id="current-cpc" placeholder="e.g., 2.50" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Monthly Budget ($):</label>
+                                <input type="number" id="monthly-budget" placeholder="e.g., 5000" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Current Conversion Rate (%):</label>
+                                <input type="number" id="conv-rate" placeholder="e.g., 3.5" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Average Order Value ($):</label>
+                                <input type="number" id="aov" placeholder="e.g., 150" step="1">
+                            </div>
+                        </div>
+                        
+                        <h4>Optimization Factors</h4>
+                        <div class="optimization-factors">
+                            <div class="form-group">
+                                <label>Current Quality Score (1-10):</label>
+                                <select id="opt-quality-score">
+                                    <option value="3">3 - Poor</option>
+                                    <option value="4">4 - Below Average</option>
+                                    <option value="5">5 - Average</option>
+                                    <option value="6">6 - Average</option>
+                                    <option value="7" selected>7 - Good</option>
+                                    <option value="8">8 - Very Good</option>
+                                    <option value="9">9 - Excellent</option>
+                                    <option value="10">10 - Perfect</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Bid Strategy:</label>
+                                <select id="bid-strategy">
+                                    <option value="manual">Manual CPC</option>
+                                    <option value="enhanced">Enhanced CPC</option>
+                                    <option value="target-cpa">Target CPA</option>
+                                    <option value="maximize-conversions">Maximize Conversions</option>
+                                    <option value="target-roas">Target ROAS</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Competition Level:</label>
+                                <select id="competition">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="very-high">Very High</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="analyzeCPCOptimization()">Analyze CPC Optimization</button>
+                        
+                        <div id="cpc-optimization-results" style="margin-top: 2rem;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
     } else if (type === 'interactive') {
         // Other interactive exercises
         exerciseContent = `
@@ -1289,6 +1365,177 @@ function optimizeLandingPage() {
             
             <button class="btn btn-success" style="margin-top: 1rem;" onclick="alert('Optimization plan saved! Implement these changes to improve your landing page performance.')">
                 Download Optimization Checklist
+            </button>
+        </div>
+    `;
+}
+
+// Analyze CPC Optimization
+function analyzeCPCOptimization() {
+    const currentCPC = parseFloat(document.getElementById('current-cpc').value) || 0;
+    const monthlyBudget = parseFloat(document.getElementById('monthly-budget').value) || 0;
+    const convRate = parseFloat(document.getElementById('conv-rate').value) || 0;
+    const aov = parseFloat(document.getElementById('aov').value) || 0;
+    const qualityScore = parseInt(document.getElementById('opt-quality-score').value);
+    const bidStrategy = document.getElementById('bid-strategy').value;
+    const competition = document.getElementById('competition').value;
+    
+    if (!currentCPC || !monthlyBudget || !convRate || !aov) {
+        alert('Please fill in all campaign metrics');
+        return;
+    }
+    
+    // Calculate current performance
+    const currentClicks = monthlyBudget / currentCPC;
+    const currentConversions = currentClicks * (convRate / 100);
+    const currentRevenue = currentConversions * aov;
+    const currentROAS = currentRevenue / monthlyBudget;
+    const currentCPA = monthlyBudget / currentConversions;
+    
+    // Calculate potential optimizations
+    const qsDiscount = (qualityScore - 5) * 0.05; // 5% discount per QS point above 5
+    const optimizedCPC = currentCPC * (1 - qsDiscount);
+    
+    // Strategy adjustments
+    let strategyMultiplier = 1;
+    let strategyAdvice = '';
+    
+    switch(bidStrategy) {
+        case 'manual':
+            strategyAdvice = 'Consider testing Enhanced CPC for 10-15% conversion boost';
+            strategyMultiplier = 1.0;
+            break;
+        case 'enhanced':
+            strategyAdvice = 'Good choice for balanced control and automation';
+            strategyMultiplier = 1.1;
+            break;
+        case 'target-cpa':
+            strategyAdvice = 'Ensure you have 30+ conversions/month for optimal performance';
+            strategyMultiplier = 1.15;
+            break;
+        case 'maximize-conversions':
+            strategyAdvice = 'Monitor closely to prevent overspending';
+            strategyMultiplier = 1.2;
+            break;
+        case 'target-roas':
+            strategyAdvice = 'Best for e-commerce with consistent AOV';
+            strategyMultiplier = 1.25;
+            break;
+    }
+    
+    // Competition adjustments
+    let competitionFactor = 1;
+    switch(competition) {
+        case 'low': competitionFactor = 0.8; break;
+        case 'medium': competitionFactor = 1.0; break;
+        case 'high': competitionFactor = 1.2; break;
+        case 'very-high': competitionFactor = 1.4; break;
+    }
+    
+    // Calculate optimized metrics
+    const optimizedClicks = monthlyBudget / optimizedCPC;
+    const optimizedConvRate = convRate * strategyMultiplier;
+    const optimizedConversions = optimizedClicks * (optimizedConvRate / 100);
+    const optimizedRevenue = optimizedConversions * aov;
+    const optimizedROAS = optimizedRevenue / monthlyBudget;
+    const optimizedCPA = monthlyBudget / optimizedConversions;
+    
+    // Generate recommendations
+    const recommendations = [];
+    
+    if (qualityScore < 7) {
+        recommendations.push({
+            priority: 'High',
+            action: 'Improve Quality Score',
+            impact: `Could reduce CPC by ${((7 - qualityScore) * 5)}%`,
+            steps: [
+                'Optimize ad relevance to keywords',
+                'Improve landing page experience',
+                'Increase expected CTR with better ad copy'
+            ]
+        });
+    }
+    
+    if (currentCPC > 3 && competition !== 'very-high') {
+        recommendations.push({
+            priority: 'High',
+            action: 'Reduce Max Bids',
+            impact: 'Lower CPC while maintaining position',
+            steps: [
+                'Test 10-15% bid reductions',
+                'Monitor impression share',
+                'Focus on long-tail keywords'
+            ]
+        });
+    }
+    
+    if (convRate < 3) {
+        recommendations.push({
+            priority: 'Critical',
+            action: 'Improve Conversion Rate',
+            impact: `Current CPA: $${currentCPA.toFixed(2)} is too high`,
+            steps: [
+                'Optimize landing pages',
+                'Test different CTAs',
+                'Improve page load speed',
+                'Add trust signals'
+            ]
+        });
+    }
+    
+    const resultsDiv = document.getElementById('cpc-optimization-results');
+    resultsDiv.innerHTML = `
+        <div class="optimization-results" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+            <h4>CPC Optimization Analysis</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 1.5rem 0;">
+                <div>
+                    <h5>Current Performance</h5>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><strong>CPC:</strong> $${currentCPC.toFixed(2)}</li>
+                        <li><strong>Monthly Clicks:</strong> ${Math.round(currentClicks).toLocaleString()}</li>
+                        <li><strong>Conversions:</strong> ${Math.round(currentConversions)}</li>
+                        <li><strong>CPA:</strong> $${currentCPA.toFixed(2)}</li>
+                        <li><strong>ROAS:</strong> ${currentROAS.toFixed(2)}x</li>
+                        <li><strong>Revenue:</strong> $${Math.round(currentRevenue).toLocaleString()}</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5>Optimized Projection</h5>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><strong>CPC:</strong> $${optimizedCPC.toFixed(2)} <span style="color: #34a853;">(-${((1 - optimizedCPC/currentCPC) * 100).toFixed(0)}%)</span></li>
+                        <li><strong>Monthly Clicks:</strong> ${Math.round(optimizedClicks).toLocaleString()} <span style="color: #34a853;">(+${Math.round(optimizedClicks - currentClicks).toLocaleString()})</span></li>
+                        <li><strong>Conversions:</strong> ${Math.round(optimizedConversions)} <span style="color: #34a853;">(+${Math.round(optimizedConversions - currentConversions)})</span></li>
+                        <li><strong>CPA:</strong> $${optimizedCPA.toFixed(2)} <span style="color: #34a853;">(-$${(currentCPA - optimizedCPA).toFixed(2)})</span></li>
+                        <li><strong>ROAS:</strong> ${optimizedROAS.toFixed(2)}x <span style="color: #34a853;">(+${(optimizedROAS - currentROAS).toFixed(2)}x)</span></li>
+                        <li><strong>Revenue:</strong> $${Math.round(optimizedRevenue).toLocaleString()} <span style="color: #34a853;">(+$${Math.round(optimizedRevenue - currentRevenue).toLocaleString()})</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin: 1.5rem 0; padding: 1rem; background: #e8f0fe; border-radius: 4px;">
+                <strong>Bid Strategy Advice:</strong> ${strategyAdvice}
+            </div>
+            
+            ${recommendations.length > 0 ? `
+                <h5>Optimization Recommendations</h5>
+                ${recommendations.map(rec => `
+                    <div style="margin: 1rem 0; padding: 1rem; background: white; border-radius: 4px; border-left: 4px solid ${
+                        rec.priority === 'Critical' ? '#ea4335' : 
+                        rec.priority === 'High' ? '#fbbc04' : '#4285f4'
+                    };">
+                        <strong>${rec.priority}: ${rec.action}</strong>
+                        <p style="margin: 0.5rem 0; color: #666;">${rec.impact}</p>
+                        <ul style="margin: 0.5rem 0;">
+                            ${rec.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+            ` : ''}
+            
+            <button class="btn btn-success" style="margin-top: 1rem;" onclick="alert('CPC optimization plan saved! Implement these changes gradually and monitor performance.')">
+                Save Optimization Plan
             </button>
         </div>
     `;
