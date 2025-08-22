@@ -79,7 +79,7 @@ function updatePlatformStats() {
         const stats = getCourseStats();
         
         const totalCoursesEl = document.getElementById('total-courses');
-        const enrolledCoursesEl = document.getElementById('enrolled-courses');
+        const enrolledCoursesEl = document.getElementById('enrolled-courses-count');
         const completedCoursesEl = document.getElementById('completed-courses');
         const totalHoursEl = document.getElementById('total-hours');
         
