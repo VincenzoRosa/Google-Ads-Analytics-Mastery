@@ -5616,6 +5616,8 @@ body {
     flex-direction: column;
     gap: 2rem;
     margin: 2rem 0;
+    max-width: 1200px;
+    width: 100%;
 }
 
 .enrolled-course-card {
@@ -5623,6 +5625,8 @@ body {
     border-radius: 16px;
     padding: 2rem;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .enrolled-course-header {
