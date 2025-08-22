@@ -508,41 +508,91 @@ function openExercise(type, title, moduleId, exerciseIndex) {
         exerciseContent = `
             <div class="exercise-modal">
                 <div class="exercise-header">
-                    <h2><i class="fas fa-calculator"></i> CPC Calculator</h2>
+                    <h2><i class="fas fa-calculator"></i> Advanced CPC Calculator</h2>
                     <button class="close-btn" onclick="closeExercise()">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="exercise-body">
-                    <p>Calculate your actual Cost Per Click using Google's real auction formula.</p>
+                    <p>Calculate your actual CPC based on Google's complete auction system including all thresholds and factors.</p>
                     
                     <div class="calculator-form">
+                        <h4>Your Ad Information</h4>
                         <div class="form-group">
-                            <label>Ad Rank of Advertiser Below You:</label>
-                            <input type="number" id="adrank-below" placeholder="e.g., 50" step="0.01">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Your Quality Score:</label>
-                            <input type="number" id="quality-score" placeholder="1-10" min="1" max="10">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Your Maximum Bid:</label>
+                            <label>Your Maximum Bid ($):</label>
                             <input type="number" id="max-bid" placeholder="e.g., 5.00" step="0.01">
+                            <small>The maximum you're willing to pay per click</small>
                         </div>
                         
-                        <button class="btn btn-primary" onclick="calculateCPC()">
-                            Calculate CPC
+                        <div class="form-group">
+                            <label>Your Quality Score (1-10):</label>
+                            <input type="number" id="quality-score" placeholder="1-10" min="1" max="10">
+                            <small>Your ad's quality score</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Ad Format & Extensions Impact:</label>
+                            <select id="format-impact">
+                                <option value="1">Standard text ad (1x)</option>
+                                <option value="1.2">With sitelinks (1.2x)</option>
+                                <option value="1.3">With callouts + sitelinks (1.3x)</option>
+                                <option value="1.5">Full extensions package (1.5x)</option>
+                            </select>
+                            <small>Extensions can boost your Ad Rank</small>
+                        </div>
+                        
+                        <h4>Auction Context</h4>
+                        <div class="form-group">
+                            <label>Auction Type:</label>
+                            <select id="auction-type">
+                                <option value="top">Top of page (above organic)</option>
+                                <option value="bottom">Bottom of page</option>
+                                <option value="absolute-top">Absolute top (position 1)</option>
+                            </select>
+                            <small>Different positions have different thresholds</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Minimum Threshold for Position ($):</label>
+                            <input type="number" id="min-threshold" placeholder="e.g., 0.50" step="0.01">
+                            <small>Minimum Ad Rank required for this position</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Competitor Below You - Ad Rank:</label>
+                            <input type="number" id="adrank-below" placeholder="e.g., 50" step="0.01">
+                            <small>The Ad Rank of the advertiser below you (0 if none)</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Search Query Context:</label>
+                            <select id="search-context">
+                                <option value="1">Low commercial intent</option>
+                                <option value="1.2">Medium commercial intent</option>
+                                <option value="1.5">High commercial intent</option>
+                                <option value="2">Branded/navigational query</option>
+                            </select>
+                            <small>Commercial intent affects pricing</small>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="calculateAdvancedCPC()">
+                            Calculate Actual CPC
                         </button>
                         
                         <div id="cpc-result" class="result-box" style="display: none;">
                             <h3>Your Actual CPC</h3>
                             <div class="result-value">$<span id="calculated-cpc">0.00</span></div>
-                            <p class="result-formula">
-                                Formula: (Ad Rank Below / Your QS) + $0.01
-                            </p>
+                            <div class="result-details">
+                                <p><strong>Your Ad Rank:</strong> <span id="your-adrank"></span></p>
+                                <p><strong>Calculation Method:</strong> <span id="calc-method"></span></p>
+                                <p><strong>Key Factor:</strong> <span id="key-factor"></span></p>
+                            </div>
                             <p class="result-explanation" id="cpc-explanation"></p>
+                            
+                            <div class="cpc-breakdown">
+                                <h4>CPC Breakdown:</h4>
+                                <ul id="breakdown-list"></ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -666,36 +716,107 @@ function closeExercise() {
     }
 }
 
-// Calculate CPC
-function calculateCPC() {
-    const adRankBelow = parseFloat(document.getElementById('adrank-below').value) || 0;
-    const qualityScore = parseFloat(document.getElementById('quality-score').value) || 1;
+// Calculate Advanced CPC with all factors
+function calculateAdvancedCPC() {
+    // Get all input values
     const maxBid = parseFloat(document.getElementById('max-bid').value) || 0;
+    const qualityScore = parseFloat(document.getElementById('quality-score').value) || 1;
+    const formatImpact = parseFloat(document.getElementById('format-impact').value) || 1;
+    const auctionType = document.getElementById('auction-type').value;
+    const minThreshold = parseFloat(document.getElementById('min-threshold').value) || 0;
+    const adRankBelow = parseFloat(document.getElementById('adrank-below').value) || 0;
+    const searchContext = parseFloat(document.getElementById('search-context').value) || 1;
     
-    if (adRankBelow <= 0 || qualityScore < 1 || qualityScore > 10) {
-        alert('Please enter valid values');
+    // Validate inputs
+    if (maxBid <= 0 || qualityScore < 1 || qualityScore > 10) {
+        alert('Please enter valid values for bid and quality score');
         return;
     }
     
-    // Formula: (Ad Rank of advertiser below / Your Quality Score) + $0.01
-    let calculatedCPC = (adRankBelow / qualityScore) + 0.01;
+    // Calculate your Ad Rank
+    const yourAdRank = maxBid * qualityScore * formatImpact;
+    
+    // Calculate minimum Ad Rank needed for the position
+    const minAdRankRequired = minThreshold * qualityScore;
+    
+    // Determine which calculation to use
+    let calculatedCPC = 0;
+    let calculationMethod = '';
+    let keyFactor = '';
+    const breakdown = [];
+    
+    if (adRankBelow > 0) {
+        // There's a competitor below you
+        const competitorBasedCPC = (adRankBelow / qualityScore) + 0.01;
+        const thresholdBasedCPC = (minAdRankRequired / qualityScore);
+        
+        // Use the higher of the two
+        if (competitorBasedCPC > thresholdBasedCPC) {
+            calculatedCPC = competitorBasedCPC;
+            calculationMethod = 'Competitor-based pricing';
+            keyFactor = 'Ad Rank of competitor below';
+            breakdown.push(`Base: (${adRankBelow} / ${qualityScore}) + $0.01 = $${competitorBasedCPC.toFixed(2)}`);
+        } else {
+            calculatedCPC = thresholdBasedCPC;
+            calculationMethod = 'Threshold-based pricing';
+            keyFactor = 'Minimum position threshold';
+            breakdown.push(`Base: ${minThreshold} (threshold) = $${thresholdBasedCPC.toFixed(2)}`);
+        }
+    } else {
+        // No competitor below - only threshold matters
+        calculatedCPC = minThreshold;
+        calculationMethod = 'Threshold-only pricing';
+        keyFactor = 'Position threshold (no competitors below)';
+        breakdown.push(`Base: Minimum threshold = $${minThreshold.toFixed(2)}`);
+    }
+    
+    // Apply search context multiplier
+    calculatedCPC *= searchContext;
+    if (searchContext > 1) {
+        breakdown.push(`Commercial intent multiplier: x${searchContext} = $${calculatedCPC.toFixed(2)}`);
+    }
+    
+    // Apply position premium for absolute top
+    if (auctionType === 'absolute-top') {
+        calculatedCPC *= 1.2;
+        breakdown.push(`Position 1 premium: x1.2 = $${calculatedCPC.toFixed(2)}`);
+    }
     
     // CPC cannot exceed max bid
     if (calculatedCPC > maxBid) {
+        breakdown.push(`Capped at max bid: $${maxBid.toFixed(2)}`);
         calculatedCPC = maxBid;
+        keyFactor += ' (capped by max bid)';
     }
     
+    // Update the display
     document.getElementById('calculated-cpc').textContent = calculatedCPC.toFixed(2);
+    document.getElementById('your-adrank').textContent = yourAdRank.toFixed(2);
+    document.getElementById('calc-method').textContent = calculationMethod;
+    document.getElementById('key-factor').textContent = keyFactor;
     
-    let explanation = '';
-    if (calculatedCPC === maxBid) {
-        explanation = `Your calculated CPC would be $${((adRankBelow / qualityScore) + 0.01).toFixed(2)}, but it's capped at your max bid of $${maxBid.toFixed(2)}.`;
+    // Create breakdown list
+    const breakdownList = document.getElementById('breakdown-list');
+    breakdownList.innerHTML = breakdown.map(item => `<li>${item}</li>`).join('');
+    
+    // Create explanation
+    let explanation = `With a Quality Score of ${qualityScore} and ${formatImpact > 1 ? 'ad extensions' : 'no extensions'}, `;
+    explanation += `your Ad Rank is ${yourAdRank.toFixed(2)}. `;
+    
+    if (yourAdRank < minAdRankRequired) {
+        explanation += `Warning: Your Ad Rank (${yourAdRank.toFixed(2)}) is below the minimum required (${minAdRankRequired.toFixed(2)}) for this position. Your ad may not show.`;
     } else {
-        explanation = `With a Quality Score of ${qualityScore}, you pay just enough to beat the advertiser below you.`;
+        explanation += `Your ad qualifies for the ${auctionType.replace('-', ' ')} position. `;
+        explanation += `The actual CPC is determined by ${calculationMethod.toLowerCase()}.`;
     }
     
     document.getElementById('cpc-explanation').textContent = explanation;
     document.getElementById('cpc-result').style.display = 'block';
+}
+
+// Keep the old simple calculator function for backward compatibility
+function calculateCPC() {
+    calculateAdvancedCPC();
 }
 
 // Update audit score

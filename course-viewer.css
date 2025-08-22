@@ -849,6 +849,38 @@ body {
     border-color: var(--primary);
 }
 
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.calculator-form h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
 .result-box {
     margin-top: 2rem;
     padding: 1.5rem;
@@ -873,6 +905,46 @@ body {
 .result-explanation {
     font-size: 0.9rem;
     opacity: 0.85;
+}
+
+.result-details {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.result-details p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.result-details strong {
+    color: white;
+    opacity: 0.95;
+}
+
+.cpc-breakdown {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cpc-breakdown h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.1rem;
+}
+
+.cpc-breakdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cpc-breakdown li {
+    padding: 0.25rem 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
 }
 
 /* Audit Checklist */
