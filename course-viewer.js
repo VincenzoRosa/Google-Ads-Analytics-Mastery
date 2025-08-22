@@ -161,11 +161,11 @@ function loadLesson(lessonIndex) {
         </div>
     `;
     
-    // Update navigation
-    updateNavigation(lessonIndex, lessons.length);
-    
-    // Scroll to top
+    // Scroll to top first
     contentBody.scrollTop = 0;
+    
+    // Update navigation (after content is loaded so we can check completion status)
+    updateNavigation(lessonIndex, lessons.length);
 }
 
 // Load section content (for comprehensive courses)
@@ -187,11 +187,11 @@ function loadSection(sectionIndex) {
         </div>
     `;
     
-    // Update navigation
-    updateNavigation(sectionIndex, sections.length);
-    
-    // Scroll to top
+    // Scroll to top first
     contentBody.scrollTop = 0;
+    
+    // Update navigation (after content is loaded so we can check completion status)
+    updateNavigation(sectionIndex, sections.length);
 }
 
 // Load module overview
@@ -277,10 +277,38 @@ function updateNavigation(current, total) {
     
     prevBtn.disabled = current === 0;
     
+    // Check if current module is already completed
+    const isModuleCompleted = courseProgress[`module_${currentModule.id}`] === 'completed';
+    
     if (current === total - 1) {
-        nextBtn.innerHTML = '<span>Complete Module</span><i class="fas fa-check"></i>';
+        // On the last lesson
+        if (isModuleCompleted) {
+            // Module already completed - show different text
+            nextBtn.innerHTML = '<span>Next Module</span><i class="fas fa-arrow-right"></i>';
+            nextBtn.classList.add('btn-completed');
+            nextBtn.onclick = () => {
+                // Go to next module or show completion message
+                const courseContent = getCourseContent(currentCourse.id);
+                const currentIndex = courseContent.modules.findIndex(m => m.id === currentModule.id);
+                if (currentIndex < courseContent.modules.length - 1) {
+                    loadModule(courseContent.modules[currentIndex + 1].id);
+                } else {
+                    // Last module of course - return to course list
+                    if (confirm('You have completed all modules! Return to course list?')) {
+                        window.location.href = 'index.html#my-courses';
+                    }
+                }
+            };
+        } else {
+            // Module not completed yet
+            nextBtn.innerHTML = '<span>Complete Module</span><i class="fas fa-check"></i>';
+            nextBtn.classList.remove('btn-completed');
+            nextBtn.onclick = () => navigateContent('next');
+        }
     } else {
         nextBtn.innerHTML = '<span>Next</span><i class="fas fa-chevron-right"></i>';
+        nextBtn.classList.remove('btn-completed');
+        nextBtn.onclick = () => navigateContent('next');
     }
     
     // Update position indicator - ensure we show the correct values

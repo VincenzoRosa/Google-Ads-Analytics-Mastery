@@ -703,3 +703,22 @@ body {
     border-color: var(--danger);
     background: rgba(245, 101, 101, 0.1);
 }
+
+/* Completed Module Button Styles */
+.nav-btn.btn-completed {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    cursor: pointer;
+}
+
+.nav-btn.btn-completed:hover {
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+    transform: translateY(-2px);
+}
+
+.nav-btn.btn-completed:not(:disabled) {
+    opacity: 1;
+}
+
+.nav-btn.btn-completed i {
+    color: white;
+}
