@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize course catalog
     initializeCatalog();
     
+    // Update platform statistics after loading saved progress
+    updatePlatformStats();
+    
     // Navigation
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
@@ -478,9 +481,8 @@ function resetCourseProgress(courseId) {
         });
     }
     
-    // Clear localStorage for this course
-    localStorage.removeItem(`course_progress_${courseId}`);
-    localStorage.removeItem(`modules_${courseId}`);
+    // Save the reset progress to localStorage (don't just remove it)
+    localStorage.setItem(`course_progress_${courseId}`, '0');
     localStorage.removeItem(`progress_${courseId}`);
     localStorage.removeItem(`last_module_${courseId}`);
     
@@ -510,6 +512,9 @@ function resetCourseProgress(courseId) {
             displayCourses();
         }
     }
+    
+    // Update platform statistics to reflect the reset
+    updatePlatformStats();
     
     // Show success message
     const notification = document.createElement('div');
