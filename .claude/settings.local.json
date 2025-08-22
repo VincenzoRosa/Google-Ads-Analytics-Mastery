@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(start http://localhost:8080)",
+      "Bash(findstr:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_wait_for",
+      "Bash(npx http-server:*)",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_evaluate",
+      "Bash(taskkill:*)",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_snapshot",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git merge:*)",
+      "Bash(git rev-list:*)",
+      "Bash(git show-ref:*)",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_close",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)",
+      "Bash(Remove-Item:*)",
+      "Bash(powershell.exe:*)",
+      "WebSearch",
+      "Bash(powershell:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\Users\\vincenzo.rosa\\.claude"
+    ]
+  }
+}

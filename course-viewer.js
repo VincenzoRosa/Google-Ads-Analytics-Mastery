@@ -298,6 +298,19 @@ function updateNavigation(current, total) {
 // Complete module
 function completeModule() {
     courseProgress[`module_${currentModule.id}`] = 'completed';
+    
+    // Calculate the overall course progress percentage
+    const courseContent = getCourseContent(currentCourse.id);
+    const completedCount = courseContent.modules.filter(m => 
+        courseProgress[`module_${m.id}`] === 'completed'
+    ).length;
+    const totalModules = courseContent.modules.length;
+    const progressPercentage = Math.round((completedCount / totalModules) * 100);
+    
+    // Update the current course object's progress
+    currentCourse.progress = progressPercentage;
+    
+    // Save progress with updated percentage
     saveCourseProgress();
     
     // Update sidebar
@@ -322,7 +335,6 @@ function completeModule() {
     showCompletionMessage();
     
     // Load next module if available
-    const courseContent = getCourseContent(currentCourse.id);
     const currentIndex = courseContent.modules.findIndex(m => m.id === currentModule.id);
     if (currentIndex < courseContent.modules.length - 1) {
         setTimeout(() => {
@@ -457,13 +469,54 @@ function loadNotes() {
 
 // Save course progress
 function saveCourseProgress() {
+    // Calculate the current progress percentage
+    const courseContent = getCourseContent(currentCourse.id);
+    let progressPercentage = 0;
+    
+    if (courseContent && courseContent.modules) {
+        const completedCount = courseContent.modules.filter(m => 
+            courseProgress[`module_${m.id}`] === 'completed'
+        ).length;
+        const totalModules = courseContent.modules.length;
+        progressPercentage = Math.round((completedCount / totalModules) * 100);
+    }
+    
+    // Save using the same key format as main application expects
+    localStorage.setItem(`course_progress_${currentCourse.id}`, progressPercentage);
+    
+    // Also save module completion status in the format main app expects
+    const moduleStatus = [];
+    if (courseContent && courseContent.modules) {
+        courseContent.modules.forEach(module => {
+            const isCompleted = courseProgress[`module_${module.id}`] === 'completed';
+            moduleStatus.push({ id: module.id, completed: isCompleted });
+        });
+        localStorage.setItem(`modules_${currentCourse.id}`, JSON.stringify(moduleStatus));
+    }
+    
+    // Keep the viewer's own progress tracking for compatibility
     localStorage.setItem(`progress_${currentCourse.id}`, JSON.stringify(courseProgress));
 }
 
 // Load course progress
 function loadCourseProgress(courseId) {
+    // First try to load from the main app's format
+    const mainAppModules = localStorage.getItem(`modules_${courseId}`);
+    if (mainAppModules) {
+        const moduleStatus = JSON.parse(mainAppModules);
+        courseProgress = {};
+        moduleStatus.forEach(status => {
+            if (status.completed) {
+                courseProgress[`module_${status.id}`] = 'completed';
+            }
+        });
+    }
+    
+    // Also check viewer's own format as fallback
     const saved = localStorage.getItem(`progress_${courseId}`);
-    courseProgress = saved ? JSON.parse(saved) : {};
+    if (saved && Object.keys(courseProgress).length === 0) {
+        courseProgress = JSON.parse(saved);
+    }
 }
 
 // Handle keyboard navigation
