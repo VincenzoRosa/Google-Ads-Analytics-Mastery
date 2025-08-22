@@ -121,10 +121,13 @@ function loadModule(moduleId) {
     // Save last accessed module
     localStorage.setItem(`last_module_${currentCourse.id}`, moduleId);
     
-    // Mark module as in progress
+    // Mark module as in progress only if not already completed
     if (!courseProgress[`module_${moduleId}`]) {
         courseProgress[`module_${moduleId}`] = 'in_progress';
         saveCourseProgress();
+    } else if (courseProgress[`module_${moduleId}`] === 'completed') {
+        // Module is already completed, ensure UI reflects this
+        console.log(`Module ${moduleId} is already completed`);
     }
     
     // Load module content based on type
@@ -136,6 +139,14 @@ function loadModule(moduleId) {
     } else {
         loadModuleOverview();
     }
+    
+    // Force update navigation after module is loaded (in case it's already completed)
+    setTimeout(() => {
+        const items = module.content.lessons || module.content.sections || [];
+        if (items.length > 0) {
+            updateNavigation(currentLesson, items.length);
+        }
+    }, 100);
     
     // Load resources
     loadModuleResources(module);
@@ -358,6 +369,10 @@ function completeModule() {
     
     // Update progress bar
     updateCourseProgress();
+    
+    // Update the navigation buttons immediately to reflect completion
+    const items = currentModule.content.lessons || currentModule.content.sections || [];
+    updateNavigation(currentLesson, items.length);
     
     // Check if this is the last module and show appropriate message
     const currentIndex = courseContent.modules.findIndex(m => m.id === currentModule.id);
