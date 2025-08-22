@@ -723,6 +723,106 @@ function openExercise(type, title, moduleId, exerciseIndex) {
                 </div>
             </div>
         `;
+    } else if (type === 'interactive' && title === 'Quality Score Analyzer') {
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-chart-line"></i> Quality Score Analyzer</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>Analyze your Quality Score components and get improvement recommendations.</p>
+                    
+                    <div class="quality-score-analyzer">
+                        <h4>Enter Your Current Metrics</h4>
+                        <div class="metrics-input">
+                            <div class="form-group">
+                                <label>Current Quality Score (1-10):</label>
+                                <input type="number" id="qs-current" min="1" max="10" placeholder="e.g., 6">
+                            </div>
+                            <div class="form-group">
+                                <label>Expected CTR:</label>
+                                <select id="qs-ctr">
+                                    <option value="below">Below Average</option>
+                                    <option value="average">Average</option>
+                                    <option value="above">Above Average</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Ad Relevance:</label>
+                                <select id="qs-relevance">
+                                    <option value="below">Below Average</option>
+                                    <option value="average">Average</option>
+                                    <option value="above">Above Average</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Landing Page Experience:</label>
+                                <select id="qs-landing">
+                                    <option value="below">Below Average</option>
+                                    <option value="average">Average</option>
+                                    <option value="above">Above Average</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="analyzeQualityScore()">Analyze Quality Score</button>
+                        
+                        <div id="qs-analysis-results" style="margin-top: 2rem;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (type === 'worksheet' && title === 'Landing Page Optimizer') {
+        exerciseContent = `
+            <div class="exercise-modal">
+                <div class="exercise-header">
+                    <h2><i class="fas fa-file-alt"></i> Landing Page Optimizer</h2>
+                    <button class="close-btn" onclick="closeExercise()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-body">
+                    <p>Optimize your landing pages for better Quality Score and conversions.</p>
+                    
+                    <div class="landing-page-optimizer">
+                        <h4>Landing Page Analysis Checklist</h4>
+                        <div class="checklist">
+                            <label><input type="checkbox" id="lp-speed"> Page loads in under 3 seconds</label>
+                            <label><input type="checkbox" id="lp-mobile"> Mobile-responsive design</label>
+                            <label><input type="checkbox" id="lp-headline"> Headline matches ad copy</label>
+                            <label><input type="checkbox" id="lp-cta"> Clear call-to-action above fold</label>
+                            <label><input type="checkbox" id="lp-trust"> Trust signals present (testimonials, badges)</label>
+                            <label><input type="checkbox" id="lp-form"> Simple form with minimal fields</label>
+                            <label><input type="checkbox" id="lp-content"> Relevant, keyword-rich content</label>
+                            <label><input type="checkbox" id="lp-nav"> Minimal navigation distractions</label>
+                        </div>
+                        
+                        <h4>Enter Page Metrics</h4>
+                        <div class="metrics-input">
+                            <div class="form-group">
+                                <label>Current Bounce Rate (%):</label>
+                                <input type="number" id="lp-bounce" placeholder="e.g., 65" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label>Average Time on Page (seconds):</label>
+                                <input type="number" id="lp-time" placeholder="e.g., 45" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Conversion Rate (%):</label>
+                                <input type="number" id="lp-conversion" placeholder="e.g., 2.5" step="0.1" min="0">
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="optimizeLandingPage()">Get Optimization Plan</button>
+                        
+                        <div id="lp-optimization-plan" style="margin-top: 2rem;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
     } else if (type === 'interactive') {
         // Other interactive exercises
         exerciseContent = `
@@ -969,6 +1069,226 @@ function generateDashboard() {
             </div>
             <button class="btn btn-success" style="margin-top: 1rem;" onclick="alert('Dashboard template saved! You can now implement this in Google Ads.')">
                 Save Dashboard Configuration
+            </button>
+        </div>
+    `;
+}
+
+// Analyze Quality Score
+function analyzeQualityScore() {
+    const currentScore = document.getElementById('qs-current').value;
+    const ctr = document.getElementById('qs-ctr').value;
+    const relevance = document.getElementById('qs-relevance').value;
+    const landing = document.getElementById('qs-landing').value;
+    
+    if (!currentScore) {
+        alert('Please enter your current Quality Score');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('qs-analysis-results');
+    
+    // Calculate improvement potential
+    const improvements = [];
+    let potentialScore = parseInt(currentScore);
+    
+    if (ctr === 'below') {
+        improvements.push({
+            component: 'Expected CTR',
+            issue: 'Below Average',
+            impact: '+2-3 points potential',
+            recommendations: [
+                'Test new ad copy variations',
+                'Add more relevant keywords to ad groups',
+                'Use ad extensions to increase visibility',
+                'Improve keyword-ad relevance'
+            ]
+        });
+        potentialScore += 2;
+    }
+    
+    if (relevance === 'below') {
+        improvements.push({
+            component: 'Ad Relevance',
+            issue: 'Below Average',
+            impact: '+1-2 points potential',
+            recommendations: [
+                'Include target keywords in headlines',
+                'Create tighter themed ad groups',
+                'Write more specific ad copy',
+                'Use dynamic keyword insertion'
+            ]
+        });
+        potentialScore += 1;
+    }
+    
+    if (landing === 'below') {
+        improvements.push({
+            component: 'Landing Page Experience',
+            issue: 'Below Average',
+            impact: '+2-3 points potential',
+            recommendations: [
+                'Improve page load speed',
+                'Make content more relevant to keywords',
+                'Enhance mobile responsiveness',
+                'Add clear CTAs above the fold'
+            ]
+        });
+        potentialScore += 2;
+    }
+    
+    potentialScore = Math.min(potentialScore, 10);
+    
+    resultsDiv.innerHTML = `
+        <div class="analysis-results" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+            <h4>Quality Score Analysis Results</h4>
+            
+            <div style="display: flex; justify-content: space-around; margin: 1rem 0;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; color: #ea4335;">${currentScore}</div>
+                    <small>Current Score</small>
+                </div>
+                <div style="text-align: center;">
+                    <i class="fas fa-arrow-right" style="font-size: 1.5rem; margin-top: 1rem; color: #666;"></i>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; color: #34a853;">${potentialScore}</div>
+                    <small>Potential Score</small>
+                </div>
+            </div>
+            
+            ${improvements.length > 0 ? `
+                <h5>Improvement Opportunities</h5>
+                ${improvements.map(imp => `
+                    <div style="margin: 1rem 0; padding: 1rem; background: white; border-radius: 4px;">
+                        <strong>${imp.component}</strong> - ${imp.impact}
+                        <ul style="margin: 0.5rem 0;">
+                            ${imp.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+            ` : `
+                <p style="color: #34a853; margin: 1rem 0;">
+                    <i class="fas fa-check-circle"></i> Your Quality Score components are well optimized!
+                </p>
+            `}
+            
+            <button class="btn btn-primary" style="margin-top: 1rem;" onclick="alert('Analysis saved! Implement these recommendations to improve your Quality Score.')">
+                Save Analysis Report
+            </button>
+        </div>
+    `;
+}
+
+// Optimize Landing Page
+function optimizeLandingPage() {
+    const bounceRate = parseFloat(document.getElementById('lp-bounce').value) || 0;
+    const timeOnPage = parseInt(document.getElementById('lp-time').value) || 0;
+    const conversionRate = parseFloat(document.getElementById('lp-conversion').value) || 0;
+    
+    const checkedItems = document.querySelectorAll('.landing-page-optimizer .checklist input:checked');
+    const score = (checkedItems.length / 8) * 100;
+    
+    const planDiv = document.getElementById('lp-optimization-plan');
+    
+    // Generate recommendations based on metrics
+    const recommendations = [];
+    
+    if (bounceRate > 60) {
+        recommendations.push({
+            priority: 'High',
+            area: 'Bounce Rate',
+            actions: [
+                'Improve page load speed (target < 3 seconds)',
+                'Ensure headline matches ad copy exactly',
+                'Add engaging content above the fold',
+                'Remove pop-ups and intrusive elements'
+            ]
+        });
+    }
+    
+    if (timeOnPage < 30) {
+        recommendations.push({
+            priority: 'High',
+            area: 'Engagement',
+            actions: [
+                'Add more relevant, valuable content',
+                'Include videos or interactive elements',
+                'Improve content formatting and readability',
+                'Add internal links to related content'
+            ]
+        });
+    }
+    
+    if (conversionRate < 2) {
+        recommendations.push({
+            priority: 'Critical',
+            area: 'Conversion Rate',
+            actions: [
+                'Simplify your forms (reduce fields)',
+                'Add trust signals and testimonials',
+                'Create urgency with limited offers',
+                'Test different CTA button colors and text'
+            ]
+        });
+    }
+    
+    // Add recommendations for unchecked items
+    const uncheckedItems = document.querySelectorAll('.landing-page-optimizer .checklist input:not(:checked)');
+    if (uncheckedItems.length > 0) {
+        const missingElements = [];
+        uncheckedItems.forEach(item => {
+            missingElements.push(item.parentElement.textContent.trim());
+        });
+        
+        recommendations.push({
+            priority: 'Medium',
+            area: 'Missing Elements',
+            actions: missingElements
+        });
+    }
+    
+    planDiv.innerHTML = `
+        <div class="optimization-plan" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+            <h4>Landing Page Optimization Plan</h4>
+            
+            <div style="margin: 1rem 0;">
+                <strong>Optimization Score: </strong>
+                <span style="font-size: 1.5rem; color: ${score >= 75 ? '#34a853' : score >= 50 ? '#fbbc04' : '#ea4335'};">
+                    ${score.toFixed(0)}%
+                </span>
+            </div>
+            
+            ${recommendations.length > 0 ? `
+                <h5>Priority Actions</h5>
+                ${recommendations.map(rec => `
+                    <div style="margin: 1rem 0; padding: 1rem; background: white; border-radius: 4px; border-left: 4px solid ${
+                        rec.priority === 'Critical' ? '#ea4335' : 
+                        rec.priority === 'High' ? '#fbbc04' : '#4285f4'
+                    };">
+                        <strong>${rec.priority} Priority: ${rec.area}</strong>
+                        <ul style="margin: 0.5rem 0;">
+                            ${rec.actions.map(action => `<li>${action}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('')}
+            ` : `
+                <p style="color: #34a853; margin: 1rem 0;">
+                    <i class="fas fa-check-circle"></i> Your landing page is well optimized!
+                </p>
+            `}
+            
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #e8f0fe; border-radius: 4px;">
+                <strong>Expected Impact:</strong>
+                <ul style="margin: 0.5rem 0;">
+                    <li>Quality Score: +1-2 points</li>
+                    <li>Conversion Rate: +${(conversionRate * 0.3).toFixed(1)}% potential increase</li>
+                    <li>CPC: -10-20% potential reduction</li>
+                </ul>
+            </div>
+            
+            <button class="btn btn-success" style="margin-top: 1rem;" onclick="alert('Optimization plan saved! Implement these changes to improve your landing page performance.')">
+                Download Optimization Checklist
             </button>
         </div>
     `;

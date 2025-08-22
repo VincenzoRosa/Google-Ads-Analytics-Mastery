@@ -26,7 +26,10 @@
       "Bash(Remove-Item:*)",
       "Bash(powershell.exe:*)",
       "WebSearch",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "mcp__playwright__browser_handle_dialog",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_type"
     ],
     "deny": [],
     "ask": [],
