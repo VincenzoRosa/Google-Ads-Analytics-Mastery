@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update view based on section
             if (targetId === 'catalog') {
-                displayCourses('all');
+                // Don't automatically show detailed courses - keep summary stats view
             } else if (targetId === 'my-courses') {
                 displayEnrolledCourses();
             } else if (targetId === 'dashboard') {
@@ -65,7 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize course catalog
 function initializeCatalog() {
     updatePlatformStats();
-    displayCourses('all');
+    // Don't automatically display courses - keep summary stats view
+    initializeCourseFilters();
 }
 
 // Update platform statistics
